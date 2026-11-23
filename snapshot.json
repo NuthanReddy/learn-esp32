@@ -1,0 +1,373 @@
+{
+  "source": "https://learn-esp32.vercel.app/",
+  "destination": "https://nuthanreddy.github.io/learn-esp32/",
+  "capturedAt": "2026-11-23T04:43:51.258Z",
+  "files": [
+    {
+      "path": "index.html",
+      "source": "https://learn-esp32.vercel.app/",
+      "originalSha256": "e7f458145efae3f1f57bf97c858277ba51e0962b8b810123ca0f486f25fd1c84",
+      "publishedSha256": "3f9690249abd580bed28d0b9501272ff3d178438c43a4b4553ca22b6a65816f4"
+    },
+    {
+      "path": "favicon.ico",
+      "source": "https://learn-esp32.vercel.app/favicon.ico",
+      "originalSha256": "167989017624737334644d3748c12d4fc4478f7f858121bdc7ba31596f0372c3",
+      "publishedSha256": "167989017624737334644d3748c12d4fc4478f7f858121bdc7ba31596f0372c3"
+    },
+    {
+      "path": "favicon.svg",
+      "source": "https://learn-esp32.vercel.app/favicon.svg",
+      "originalSha256": "d8e5f375fb0df71b576d6e975a42042b8e0a92008f2950084da833e30ce6717c",
+      "publishedSha256": "d8e5f375fb0df71b576d6e975a42042b8e0a92008f2950084da833e30ce6717c"
+    },
+    {
+      "path": "apple-touch-icon.png",
+      "source": "https://learn-esp32.vercel.app/apple-touch-icon.png",
+      "originalSha256": "0f0d715bedae2c6a0193cad9bb78c7a868b78ec23ad0a316b78b27bc28157fcf",
+      "publishedSha256": "0f0d715bedae2c6a0193cad9bb78c7a868b78ec23ad0a316b78b27bc28157fcf"
+    },
+    {
+      "path": "site.webmanifest",
+      "source": "https://learn-esp32.vercel.app/site.webmanifest",
+      "originalSha256": "781648dfb59aba5b79ded10a1bb4d27b748b626caf9deff29aa63eb268e53b4e",
+      "publishedSha256": "077285a57b51a05e4bb51b5932ac466cfba5017f23684f8d277994b76d7cd14b"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-latin-600-normal-BkLiAYu4.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-latin-600-normal-BkLiAYu4.woff2",
+      "originalSha256": "f158417e9207b5362f9b71a2fe779ce5bb836ad972f38445c3163af39d2c998d",
+      "publishedSha256": "f158417e9207b5362f9b71a2fe779ce5bb836ad972f38445c3163af39d2c998d"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-latin-500-normal-G0uxJNrM.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-latin-500-normal-G0uxJNrM.woff2",
+      "originalSha256": "0d7513795eaf8fdab7f340144841bd2d9fac7d9303c03aa6b525a2c908e9b371",
+      "publishedSha256": "0d7513795eaf8fdab7f340144841bd2d9fac7d9303c03aa6b525a2c908e9b371"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-latin-700-normal-BpqDG8I9.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-latin-700-normal-BpqDG8I9.woff2",
+      "originalSha256": "fb958c8c20a05552ac8a85d925d96028d52565792650e941a5fe96b6997aa5cb",
+      "publishedSha256": "fb958c8c20a05552ac8a85d925d96028d52565792650e941a5fe96b6997aa5cb"
+    },
+    {
+      "path": "assets/index-DkuYVBNg.js",
+      "source": "https://learn-esp32.vercel.app/assets/index-DkuYVBNg.js",
+      "originalSha256": "f2902a4e5799a4cc2370b824690fd1178c0efb6e2e6ec4de0ee43f17ec3e3e57",
+      "publishedSha256": "70625360c49862f010ce9d1545b92090a7061b7046e72601faca6ecc92e3ffaf"
+    },
+    {
+      "path": "assets/index-D92WvK9w.css",
+      "source": "https://learn-esp32.vercel.app/assets/index-D92WvK9w.css",
+      "originalSha256": "c684f0b5b1f6b332f32f28592360d01bbe866316a361643752b9e92cd6522924",
+      "publishedSha256": "d82e5de5443c857809b18929352c3bedfa42fe922f8be391b21ee073fea2841f"
+    },
+    {
+      "path": "og-image.png",
+      "source": "https://learn-esp32.vercel.app/og-image.png",
+      "originalSha256": "195ff6128aed4f2f6ede8ab7d0d9224d10e6e09a11d0deef1b211b1d8ffdbd10",
+      "publishedSha256": "195ff6128aed4f2f6ede8ab7d0d9224d10e6e09a11d0deef1b211b1d8ffdbd10"
+    },
+    {
+      "path": "icon-192.png",
+      "source": "https://learn-esp32.vercel.app/icon-192.png",
+      "originalSha256": "e417967d17b5e603e7ef4e326fee75139c774579e69a850a3de24cdce200ddbe",
+      "publishedSha256": "e417967d17b5e603e7ef4e326fee75139c774579e69a850a3de24cdce200ddbe"
+    },
+    {
+      "path": "icon-512.png",
+      "source": "https://learn-esp32.vercel.app/icon-512.png",
+      "originalSha256": "269b7f3b222b4c39d2b65773b811a4862bcbe2b2c624fe0d8557e7fd1ba47b4d",
+      "publishedSha256": "269b7f3b222b4c39d2b65773b811a4862bcbe2b2c624fe0d8557e7fd1ba47b4d"
+    },
+    {
+      "path": "icon-maskable-512.png",
+      "source": "https://learn-esp32.vercel.app/icon-maskable-512.png",
+      "originalSha256": "c82eeffe66c43f5648a8c8af6105f85dd1a013a0d858d832f0977f66b0cb1bc6",
+      "publishedSha256": "c82eeffe66c43f5648a8c8af6105f85dd1a013a0d858d832f0977f66b0cb1bc6"
+    },
+    {
+      "path": "assets/es-BKdJc8IX.js",
+      "source": "https://learn-esp32.vercel.app/assets/es-BKdJc8IX.js",
+      "originalSha256": "67449497612cd44a87596ce2fd8ce99149a3f9dc1eebec92f89b04a6e5beb253",
+      "publishedSha256": "67449497612cd44a87596ce2fd8ce99149a3f9dc1eebec92f89b04a6e5beb253"
+    },
+    {
+      "path": "assets/same-D3bT92aA.js",
+      "source": "https://learn-esp32.vercel.app/assets/same-D3bT92aA.js",
+      "originalSha256": "a23ceb270e3993f5b08381c26ac1587acd35863da6bb525fb79dfd38692f0666",
+      "publishedSha256": "a23ceb270e3993f5b08381c26ac1587acd35863da6bb525fb79dfd38692f0666"
+    },
+    {
+      "path": "assets/pt-m8M0mGNW.js",
+      "source": "https://learn-esp32.vercel.app/assets/pt-m8M0mGNW.js",
+      "originalSha256": "69101e3f31e2f23c06738a37c285fbc229316c2bf2f5d60f19793f81a779058b",
+      "publishedSha256": "69101e3f31e2f23c06738a37c285fbc229316c2bf2f5d60f19793f81a779058b"
+    },
+    {
+      "path": "assets/fr-BZDeUwOU.js",
+      "source": "https://learn-esp32.vercel.app/assets/fr-BZDeUwOU.js",
+      "originalSha256": "be9cea5d1b02a0e06ce3f0ed09fe213c66a343143d7c16d8986616e2f4f8ef56",
+      "publishedSha256": "be9cea5d1b02a0e06ce3f0ed09fe213c66a343143d7c16d8986616e2f4f8ef56"
+    },
+    {
+      "path": "assets/it-BVx9ZXCD.js",
+      "source": "https://learn-esp32.vercel.app/assets/it-BVx9ZXCD.js",
+      "originalSha256": "c231ecfaae43954c8c09600d422a509b49486c6f8da5daf51ae97fe7f17cef1a",
+      "publishedSha256": "c231ecfaae43954c8c09600d422a509b49486c6f8da5daf51ae97fe7f17cef1a"
+    },
+    {
+      "path": "assets/de-CvjUYMuW.js",
+      "source": "https://learn-esp32.vercel.app/assets/de-CvjUYMuW.js",
+      "originalSha256": "daac569aa8727206e73c9eaf7d5454ce06432feceb895107f6fc38a73c25b6f2",
+      "publishedSha256": "daac569aa8727206e73c9eaf7d5454ce06432feceb895107f6fc38a73c25b6f2"
+    },
+    {
+      "path": "assets/nl-B38MgCn9.js",
+      "source": "https://learn-esp32.vercel.app/assets/nl-B38MgCn9.js",
+      "originalSha256": "828b54db2cf0920738f6d6ba613034cd0ec4cf08e647040eb8163c6f27e503fd",
+      "publishedSha256": "828b54db2cf0920738f6d6ba613034cd0ec4cf08e647040eb8163c6f27e503fd"
+    },
+    {
+      "path": "assets/pl-DFr9HzCx.js",
+      "source": "https://learn-esp32.vercel.app/assets/pl-DFr9HzCx.js",
+      "originalSha256": "c3f4617108a81ef57ce65902ab037b8cdcfb1b300af2c60fdd67c157ee6f6697",
+      "publishedSha256": "c3f4617108a81ef57ce65902ab037b8cdcfb1b300af2c60fdd67c157ee6f6697"
+    },
+    {
+      "path": "assets/tr-d8tI-rCv.js",
+      "source": "https://learn-esp32.vercel.app/assets/tr-d8tI-rCv.js",
+      "originalSha256": "88e8cf35a11322d62e8e4d8cf2dc2fd21786db0615a2b9c6b9057366b0499280",
+      "publishedSha256": "88e8cf35a11322d62e8e4d8cf2dc2fd21786db0615a2b9c6b9057366b0499280"
+    },
+    {
+      "path": "assets/id-Dry0QGG7.js",
+      "source": "https://learn-esp32.vercel.app/assets/id-Dry0QGG7.js",
+      "originalSha256": "f97fdc8b5fd7898b92f8c78e55177c72f9b41189b5126f6120cf971aaba47074",
+      "publishedSha256": "f97fdc8b5fd7898b92f8c78e55177c72f9b41189b5126f6120cf971aaba47074"
+    },
+    {
+      "path": "assets/vi-B2gWqxBl.js",
+      "source": "https://learn-esp32.vercel.app/assets/vi-B2gWqxBl.js",
+      "originalSha256": "0814e002e9c9335661defa938f1aab573032249add9a24548e8a59f427e62059",
+      "publishedSha256": "0814e002e9c9335661defa938f1aab573032249add9a24548e8a59f427e62059"
+    },
+    {
+      "path": "assets/el-Cbk7fUpA.js",
+      "source": "https://learn-esp32.vercel.app/assets/el-Cbk7fUpA.js",
+      "originalSha256": "8a6f29bb52294d7c933506596536d02b14ab2bd3ddfae1a2df79f3e338be2fe0",
+      "publishedSha256": "8a6f29bb52294d7c933506596536d02b14ab2bd3ddfae1a2df79f3e338be2fe0"
+    },
+    {
+      "path": "assets/uk-CuXeOlgF.js",
+      "source": "https://learn-esp32.vercel.app/assets/uk-CuXeOlgF.js",
+      "originalSha256": "4a89840e9b04705ea7cdce6cbe99ac536386d739c033cc76f919333b6400bd9f",
+      "publishedSha256": "4a89840e9b04705ea7cdce6cbe99ac536386d739c033cc76f919333b6400bd9f"
+    },
+    {
+      "path": "assets/ru-CImx4QY8.js",
+      "source": "https://learn-esp32.vercel.app/assets/ru-CImx4QY8.js",
+      "originalSha256": "b83cb59d66cefc25be38b4cc009081534d72a820c5910b505625fb151dd0517d",
+      "publishedSha256": "b83cb59d66cefc25be38b4cc009081534d72a820c5910b505625fb151dd0517d"
+    },
+    {
+      "path": "assets/zh-9PbFRrCs.js",
+      "source": "https://learn-esp32.vercel.app/assets/zh-9PbFRrCs.js",
+      "originalSha256": "811f6e656af193a9bed189252fca19336745f460d1ebdf2657488627f97470df",
+      "publishedSha256": "811f6e656af193a9bed189252fca19336745f460d1ebdf2657488627f97470df"
+    },
+    {
+      "path": "assets/zh-TW-DZTQR0TT.js",
+      "source": "https://learn-esp32.vercel.app/assets/zh-TW-DZTQR0TT.js",
+      "originalSha256": "86386b5add7b700af7efa2726e5bdd83246f23bf648153b068319380cbd56666",
+      "publishedSha256": "86386b5add7b700af7efa2726e5bdd83246f23bf648153b068319380cbd56666"
+    },
+    {
+      "path": "assets/ja-BscIViHS.js",
+      "source": "https://learn-esp32.vercel.app/assets/ja-BscIViHS.js",
+      "originalSha256": "5c660772dbbf477f1902f4afc6c31b889a5d801d80b1aaa4b3b9c00d1f532533",
+      "publishedSha256": "5c660772dbbf477f1902f4afc6c31b889a5d801d80b1aaa4b3b9c00d1f532533"
+    },
+    {
+      "path": "assets/ko-B9ShBiSL.js",
+      "source": "https://learn-esp32.vercel.app/assets/ko-B9ShBiSL.js",
+      "originalSha256": "6f794c59b3f5f3736c06342a763a8d27ca0682490c1dbf3c27a4fcb85b08a4b8",
+      "publishedSha256": "6f794c59b3f5f3736c06342a763a8d27ca0682490c1dbf3c27a4fcb85b08a4b8"
+    },
+    {
+      "path": "assets/hi-BQ5b5MGs.js",
+      "source": "https://learn-esp32.vercel.app/assets/hi-BQ5b5MGs.js",
+      "originalSha256": "dbb246912725bf3b546f924468a5692eb5ed68530b12b8d2a02de1098eb72edb",
+      "publishedSha256": "dbb246912725bf3b546f924468a5692eb5ed68530b12b8d2a02de1098eb72edb"
+    },
+    {
+      "path": "assets/ar-CYC8lSVW.js",
+      "source": "https://learn-esp32.vercel.app/assets/ar-CYC8lSVW.js",
+      "originalSha256": "05023cc0ef57621d497a0cb16d76d34a887617633e749d8f0aea224bb5629c83",
+      "publishedSha256": "05023cc0ef57621d497a0cb16d76d34a887617633e749d8f0aea224bb5629c83"
+    },
+    {
+      "path": "assets/he-DCiQqizk.js",
+      "source": "https://learn-esp32.vercel.app/assets/he-DCiQqizk.js",
+      "originalSha256": "5a314c94ed92399ec0937d933687acbd35c9d744eb2478bec3f12c2bdffebe04",
+      "publishedSha256": "5a314c94ed92399ec0937d933687acbd35c9d744eb2478bec3f12c2bdffebe04"
+    },
+    {
+      "path": "assets/stage-DEosw14G.js",
+      "source": "https://learn-esp32.vercel.app/assets/stage-DEosw14G.js",
+      "originalSha256": "5191798fb9378a3595981736817ab641ca9702f7f900d5d1eed4d53a6bd9524b",
+      "publishedSha256": "5191798fb9378a3595981736817ab641ca9702f7f900d5d1eed4d53a6bd9524b"
+    },
+    {
+      "path": "assets/kit-Dg_2oXBG.js",
+      "source": "https://learn-esp32.vercel.app/assets/kit-Dg_2oXBG.js",
+      "originalSha256": "c84a950e4a1b6bc7b42f9b7485d66c243062b10b3190e36c328f8f27953ce5af",
+      "publishedSha256": "c84a950e4a1b6bc7b42f9b7485d66c243062b10b3190e36c328f8f27953ce5af"
+    },
+    {
+      "path": "assets/thumbs-DetSF3Sk.js",
+      "source": "https://learn-esp32.vercel.app/assets/thumbs-DetSF3Sk.js",
+      "originalSha256": "68eca64bc8dd1d0324904b01234368d0b9f8bc2fb88075c45590f773823ff55a",
+      "publishedSha256": "68eca64bc8dd1d0324904b01234368d0b9f8bc2fb88075c45590f773823ff55a"
+    },
+    {
+      "path": "assets/barlow-vietnamese-400-normal-Dpl4UHAZ.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-vietnamese-400-normal-Dpl4UHAZ.woff2",
+      "originalSha256": "fef1e3c39d06f701c21120978484610a6848dc357d1ec603421927d709016b10",
+      "publishedSha256": "fef1e3c39d06f701c21120978484610a6848dc357d1ec603421927d709016b10"
+    },
+    {
+      "path": "assets/barlow-latin-ext-400-normal-HxX4XjxC.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-latin-ext-400-normal-HxX4XjxC.woff2",
+      "originalSha256": "122b24bc2a90b0abe189f5229768bf2e9ba641324fe2459b48850079625934f1",
+      "publishedSha256": "122b24bc2a90b0abe189f5229768bf2e9ba641324fe2459b48850079625934f1"
+    },
+    {
+      "path": "assets/barlow-latin-400-normal-qiz4-Cze.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-latin-400-normal-qiz4-Cze.woff2",
+      "originalSha256": "b0a8ad37ac45f5fb22ced461576db72e44e295107aad7a9c8a7a4bad728fd03b",
+      "publishedSha256": "b0a8ad37ac45f5fb22ced461576db72e44e295107aad7a9c8a7a4bad728fd03b"
+    },
+    {
+      "path": "assets/barlow-vietnamese-500-normal-zTViEIzf.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-vietnamese-500-normal-zTViEIzf.woff2",
+      "originalSha256": "ba426fe513fa9e7e053ae6cf15132bb0ee3a076c634d0a02a0d221c66d74ea5e",
+      "publishedSha256": "ba426fe513fa9e7e053ae6cf15132bb0ee3a076c634d0a02a0d221c66d74ea5e"
+    },
+    {
+      "path": "assets/barlow-latin-ext-500-normal-DOaysfXq.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-latin-ext-500-normal-DOaysfXq.woff2",
+      "originalSha256": "3facdf66b60778c7e64693013be7799e6686b2488dad65525b4036e211ab03e0",
+      "publishedSha256": "3facdf66b60778c7e64693013be7799e6686b2488dad65525b4036e211ab03e0"
+    },
+    {
+      "path": "assets/barlow-latin-500-normal-BPAOfeC8.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-latin-500-normal-BPAOfeC8.woff2",
+      "originalSha256": "cd759df8ef9efc98fee14307b4eb5ba27f08b1f8f2f3ad2872432e25c89907a8",
+      "publishedSha256": "cd759df8ef9efc98fee14307b4eb5ba27f08b1f8f2f3ad2872432e25c89907a8"
+    },
+    {
+      "path": "assets/barlow-vietnamese-600-normal-DcjprdFV.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-vietnamese-600-normal-DcjprdFV.woff2",
+      "originalSha256": "d9bb523921d15e2b3fca0b22860af8b6f4a878a54c0bddd7c522588988253943",
+      "publishedSha256": "d9bb523921d15e2b3fca0b22860af8b6f4a878a54c0bddd7c522588988253943"
+    },
+    {
+      "path": "assets/barlow-latin-ext-600-normal-B8NK_A3D.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-latin-ext-600-normal-B8NK_A3D.woff2",
+      "originalSha256": "b7f099c421968b583734bc631e6706bff8fc23908112a219f5f0e37f59b03b32",
+      "publishedSha256": "b7f099c421968b583734bc631e6706bff8fc23908112a219f5f0e37f59b03b32"
+    },
+    {
+      "path": "assets/barlow-latin-600-normal-DILqtrty.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-latin-600-normal-DILqtrty.woff2",
+      "originalSha256": "4b52ddd4836b592df0e4832b8286956883cdc651b015126bdd18f184b7f90cc3",
+      "publishedSha256": "4b52ddd4836b592df0e4832b8286956883cdc651b015126bdd18f184b7f90cc3"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-vietnamese-500-normal-DGADhYWF.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-vietnamese-500-normal-DGADhYWF.woff2",
+      "originalSha256": "0c9f6e757f75f5f7460a9fa0dc7efb1da662e6a255d54422a09d4ef4ed88734f",
+      "publishedSha256": "0c9f6e757f75f5f7460a9fa0dc7efb1da662e6a255d54422a09d4ef4ed88734f"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-latin-ext-500-normal-BXdp1BvY.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-latin-ext-500-normal-BXdp1BvY.woff2",
+      "originalSha256": "5e07c7d621bb57be13250d12c8c7ba71b84c6f71ad2080bc2ee9d3dd533b3579",
+      "publishedSha256": "5e07c7d621bb57be13250d12c8c7ba71b84c6f71ad2080bc2ee9d3dd533b3579"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-vietnamese-600-normal-b1FQiZcx.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-vietnamese-600-normal-b1FQiZcx.woff2",
+      "originalSha256": "02eaae68f7cdb7ae293eddd3824d058b1bf4d3adda1c131532eb3ec333d71f62",
+      "publishedSha256": "02eaae68f7cdb7ae293eddd3824d058b1bf4d3adda1c131532eb3ec333d71f62"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-latin-ext-600-normal-BkQ9hN72.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-latin-ext-600-normal-BkQ9hN72.woff2",
+      "originalSha256": "5a58c6c9887c7306399176e96bdeb0c2c3b2935a43f89e25ac4e342b03631843",
+      "publishedSha256": "5a58c6c9887c7306399176e96bdeb0c2c3b2935a43f89e25ac4e342b03631843"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-vietnamese-700-normal-Dm7RZTvf.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-vietnamese-700-normal-Dm7RZTvf.woff2",
+      "originalSha256": "fe064306981be12387a35b920de7dbcb38b99ff5428194a287f5df1e663aa75a",
+      "publishedSha256": "fe064306981be12387a35b920de7dbcb38b99ff5428194a287f5df1e663aa75a"
+    },
+    {
+      "path": "assets/barlow-semi-condensed-latin-ext-700-normal-BhgEo64M.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/barlow-semi-condensed-latin-ext-700-normal-BhgEo64M.woff2",
+      "originalSha256": "109b73c772cc798422a6879f32c96ad646cb65f5c211933cb05f60c4fc2ab540",
+      "publishedSha256": "109b73c772cc798422a6879f32c96ad646cb65f5c211933cb05f60c4fc2ab540"
+    },
+    {
+      "path": "assets/jetbrains-mono-cyrillic-400-normal-BEIGL1Tu.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-cyrillic-400-normal-BEIGL1Tu.woff2",
+      "originalSha256": "522f5827308102a9c0ea7860b5a11306043610ecf03d150ba32056a06e8c56e2",
+      "publishedSha256": "522f5827308102a9c0ea7860b5a11306043610ecf03d150ba32056a06e8c56e2"
+    },
+    {
+      "path": "assets/jetbrains-mono-greek-400-normal-C190GLew.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-greek-400-normal-C190GLew.woff2",
+      "originalSha256": "365b7a8eaff022b13ed0561fde3890a04a30507d773ecd5adb3aca8e766a285c",
+      "publishedSha256": "365b7a8eaff022b13ed0561fde3890a04a30507d773ecd5adb3aca8e766a285c"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-ext-400-normal-Bc8Ftmh3.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-latin-ext-400-normal-Bc8Ftmh3.woff2",
+      "originalSha256": "505dfba8ecbe77e82765f36d317ed7ef4ac42719dc5f4ae68d1c483fd22d0d14",
+      "publishedSha256": "505dfba8ecbe77e82765f36d317ed7ef4ac42719dc5f4ae68d1c483fd22d0d14"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2",
+      "originalSha256": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb",
+      "publishedSha256": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb"
+    },
+    {
+      "path": "assets/jetbrains-mono-cyrillic-500-normal-DmUKJPL_.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-cyrillic-500-normal-DmUKJPL_.woff2",
+      "originalSha256": "26c9ed511def1f0fd3d1b5fe6d5c0c594d9ef8dd2435d2ff240ea265a416b6e4",
+      "publishedSha256": "26c9ed511def1f0fd3d1b5fe6d5c0c594d9ef8dd2435d2ff240ea265a416b6e4"
+    },
+    {
+      "path": "assets/jetbrains-mono-greek-500-normal-JpySY46c.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-greek-500-normal-JpySY46c.woff2",
+      "originalSha256": "5b6dee4610cdaab7c4218c1692aa9a536414010eef4e5b3cfb25f45007811bcc",
+      "publishedSha256": "5b6dee4610cdaab7c4218c1692aa9a536414010eef4e5b3cfb25f45007811bcc"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-ext-500-normal-Cut-4mMH.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-latin-ext-500-normal-Cut-4mMH.woff2",
+      "originalSha256": "879df9319f1cbf633bee1dd489e376a9e1e8c458f4abddcfe381cb83b5e6b027",
+      "publishedSha256": "879df9319f1cbf633bee1dd489e376a9e1e8c458f4abddcfe381cb83b5e6b027"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-500-normal-BWZEU5yA.woff2",
+      "source": "https://learn-esp32.vercel.app/assets/jetbrains-mono-latin-500-normal-BWZEU5yA.woff2",
+      "originalSha256": "cb182feeed4d798ff6961d3c79f7026279448fca0676438aaecb21f3fc39553a",
+      "publishedSha256": "cb182feeed4d798ff6961d3c79f7026279448fca0676438aaecb21f3fc39553a"
+    }
+  ]
+}
