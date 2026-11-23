@@ -45,6 +45,19 @@ WebGL 2 and hardware acceleration is required for the 3D view. Settings and
 progress are saved locally per browser/origin; they do not transfer from the
 reference site.
 
+The optional live browser check uses Playwright and an installed Microsoft Edge:
+
+```sh
+npm ci
+npm run test:live
+```
+
+It checks WebGL startup, sketch execution, 3D controls, navigation and code for
+all 20 lessons, and asset responses and browser errors. Pass a URL and screenshot
+output path to `node scripts/verify-live.mjs` to check another deployment or save
+a full-page capture. Playwright is a development-only dependency; it is never
+shipped to Pages.
+
 ## Refresh and deployment
 
 With permission to republish any newer upstream version, run:

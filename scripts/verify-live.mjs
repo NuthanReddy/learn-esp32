@@ -15,6 +15,9 @@ page.on("response", response => {
 page.on("requestfailed", request =>
   failures.push(`${request.failure().errorText} ${request.url()}`));
 page.on("pageerror", error => failures.push(error.message));
+page.on("console", message => {
+  if (message.type() === "error") failures.push(message.text());
+});
 
 try {
   await page.goto(url);
@@ -26,7 +29,7 @@ try {
   await page.getByRole("button", { name: "Run sketch", exact: true }).click();
   await page.locator(".code-card").getByText("Hello from the ESP32!", { exact: true })
     .waitFor({ timeout: 30000 });
-  await page.getByRole("button", { name: "Stop sketch", exact: true }).click();
+  await page.locator(".btn-run").click();
   await page.getByRole("button", { name: "Turn right", exact: true }).click();
   await page.getByRole("button", { name: "Zoom in", exact: true }).click();
   await page.getByRole("button", { name: "Reset view", exact: true }).click();
@@ -45,6 +48,19 @@ try {
     assert((await page.locator(".code-card code").innerText()).length > 80);
   }
   await page.locator('#lesson-list [data-id="board"]').click();
+  await page.getByRole("link", { name: "Language", exact: true }).click();
+  const languages = await page.locator("[data-lang]")
+    .evaluateAll(elements => elements.map(element => element.dataset.lang));
+  for (const language of languages) {
+    await page.locator(`[data-lang="${language}"]`).click();
+    await page.waitForFunction(code => document.querySelector(
+      `[data-lang="${code}"]`)?.getAttribute("aria-pressed") === "true", language);
+    assert.equal(await page.locator("#lesson-list .lesson").count(), 20);
+  }
+  await page.locator('[data-lang="en"]').click();
+  await page.waitForFunction(() => document.querySelector(
+    '[data-lang="en"]')?.getAttribute("aria-pressed") === "true");
+  await page.getByRole("link", { name: "Language", exact: true }).click();
   await page.waitForTimeout(1500);
   if (screenshot) await page.screenshot({ path: screenshot, fullPage: true });
   const snapshot = JSON.parse(await readFile("snapshot.json", "utf8"));
@@ -56,7 +72,7 @@ try {
     "Original deployment asset hotlink");
   assert.deepEqual(failures, [], "Browser request or JavaScript errors");
   console.log(JSON.stringify({
-    url, lessons, assetsChecked: snapshot.files.length,
+    url, lessons, languages, assetsChecked: snapshot.files.length,
     browserRequests: requests.size, failures, screenshot,
   }, null, 2));
 } catch (error) {
