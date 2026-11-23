@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { newLessons } from "../site/library/lessons.js";
+import { newLessons, TOTAL_LESSONS } from "../site/library/lessons.js";
 import { customize } from "./apply-customizations.mjs";
 
 const snapshot = JSON.parse(await readFile("snapshot.json", "utf8"));
@@ -19,13 +19,13 @@ assert(html.includes('href="./customizations.css"'), "Layout stylesheet missing"
 assert(html.includes('href="./library/styles.css"'), "Library stylesheet missing");
 assert(!html.includes("20 free beginner lessons."), "Stale lesson metadata");
 const metadata = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1]);
-assert.equal(metadata.teaches.length, 24);
-assert.equal([...html.matchAll(/<li><b>\d+\./g)].length, 24, "Noscript lessons");
+assert.equal(metadata.teaches.length, TOTAL_LESSONS);
+assert.equal([...html.matchAll(/<li><b>\d+\./g)].length, TOTAL_LESSONS, "Noscript lessons");
 assert((await readFile("site/customizations.css", "utf8")).length > 100);
 const entry = snapshot.files.find(file => /^assets\/index-.*\.js$/.test(file.path));
 const js = await readFile(path.join("site", ...entry.path.split("/")), "utf8");
 assert.equal([...js.matchAll(/cardTitle:`/g)].length, 20, "Expected 20 lessons");
-assert.equal(newLessons.length, 4);
+assert.equal(newLessons.length, 7);
 for (const lesson of newLessons) {
   assert((await readFile(`site/library/thumbnails/${lesson.id}.png`)).length > 1024,
     `Missing/empty ${lesson.id} 3D thumbnail`);
@@ -66,4 +66,4 @@ for (const name of ["three-LICENSE.txt", "barlow-OFL.txt",
   "barlow-semi-condensed-OFL.txt", "jetbrains-mono-OFL.txt"]) {
   assert((await readFile(`site/notices/${name}`, "utf8")).length > 100);
 }
-console.log(`Verified ${snapshot.files.length} snapshot assets, 24 lessons, guarded adapters, discovery URLs and credits.`);
+console.log(`Verified ${snapshot.files.length} snapshot assets, ${TOTAL_LESSONS} lessons, guarded adapters, discovery URLs and credits.`);

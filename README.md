@@ -2,8 +2,8 @@
 
 An authorized static snapshot of [Learn ESP32](https://learn-esp32.vercel.app/),
 with the original 20 interactive lessons, 3D board, circuit simulations,
-navigation, schematics, settings and languages preserved, plus four new lessons
-in the same visual style (24 lessons total).
+navigation, schematics, settings and languages preserved, plus seven new lessons
+in the same visual style (27 lessons total).
 
 **Live site:** https://nuthanreddy.github.io/learn-esp32/  
 **Repository:** https://github.com/NuthanReddy/learn-esp32
@@ -40,7 +40,7 @@ visible, including at 320px.
 
 The clone audit also restores project-scoped `robots.txt` and `sitemap.xml`,
 updates canonical/sharing/structured metadata and the non-JavaScript lesson
-list to 24, adds a keyboard skip link in all 21 existing languages, and asks for
+list to 27, adds a keyboard skip link in all 21 existing languages, and asks for
 localized confirmation before resetting progress. A storage failure refuses
 the reset rather than losing in-memory progress. The project-level robots file
 is a discovery resource; only `/robots.txt` at the origin root controls crawling.
@@ -56,6 +56,9 @@ Maintained ES modules in `site/library/` add:
 | MQTT / Home Assistant telemetry | Simulated broker/dashboard, retained lamp commands and reconnect |
 | Battery / deep sleep | 47k/47k ADC divider, ideal power budget, timer and GPIO wake |
 | microSD logger | SPI circuit, timestamped virtual CSV, card errors, download and persistence |
+| Home: hallway light | Darkness AND motion, relative light level and retriggerable LED off-delay |
+| Home: humidity fan | Adjustable on/off humidity thresholds, hysteresis and low-voltage motor driver |
+| Home: leak indicator | Wet probe latches an alert; drying and an explicit reset are both required |
 
 Each includes native lesson navigation, progress, component selection, 3D
 parts, schematics and overview/pinout/example/specification tabs. Dedicated
@@ -80,6 +83,16 @@ errors and missing cards are explicit, with no successful-write fallback.
 Existing progress/settings remain under their original storage keys. The
 original UI and 20 lessons retain all 21 languages; **new lesson narratives and
 simulation controls currently use English fallback**.
+
+The **Home automation (3)** library shortcut opens the new home lessons.
+These are low-voltage tabletop demonstrations, not appliance wiring: the
+hallway uses a small resistor-limited LED, and the fan requires an external
+regulated 5 V supply, a suitable logic-level MOSFET, gate resistors, flyback
+diode and common GND. Never connect mains or drive a motor from a GPIO.
+The leak model uses a conditioned 3.3 V digital signal and is **not a safety
+system**. Stop turns the light/fan off and freezes the leak latch; a new Run
+starts a fresh simulated controller, using the persisted environmental
+controls. Alerts are not persisted or delivered to physical devices.
 
 `snapshot.json` records capture time, source URLs and SHA-256 hashes of both
 downloaded and published assets. The snapshot is frozen, not automatically
@@ -108,7 +121,7 @@ npm run test:live
 ```
 
 It checks WebGL startup, sketch execution, 3D controls, navigation and code for
-all 24 lessons, progress persistence/reset, all languages, asset responses and
+all 27 lessons, progress persistence/reset, all languages, asset responses and
 browser errors. Pass a URL and screenshot
 output path to `node scripts/verify-live.mjs` to check another deployment or save
 a full-page capture. Playwright is a development-only dependency; it is never
@@ -118,7 +131,7 @@ For a layout revision, `node scripts/verify-layout.mjs URL ARTIFACT_DIRECTORY
 before` captures baseline screenshots and measurements at five desktop, mobile,
 tablet and landscape sizes. Run it with `after` against the revised URL to check
 the actual camera change, icon sizes, unchanged text sizing, 44px compact hit
-targets, page overflow and all 24 lesson selections. Keep comparison artifacts
+targets, page overflow and all 27 lesson selections. Keep comparison artifacts
 outside the repository.
 
 `node scripts/verify-library.mjs URL ARTIFACT_DIRECTORY` exercises the new
@@ -127,6 +140,9 @@ sizes, with desktop/mobile captures. `node scripts/audit-source.mjs URL`
 compares the original 20 lesson titles, selection, run/stop and language flows
 against the reference. Run `node scripts/render-library-thumbnails.mjs URL`
 against the local server to regenerate the maintained 3D preview images.
+`node scripts/verify-home.mjs URL ARTIFACT_DIRECTORY` checks the three home
+lessons, motion retriggering, hysteresis, refused wet resets, 24-to-27 progress
+migration, stopped outputs and desktop/mobile controls and screenshots.
 
 ## Refresh and deployment
 

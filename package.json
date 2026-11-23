@@ -5,6 +5,7 @@
     "test": "node --test scripts/library.test.mjs && node scripts/verify-snapshot.mjs",
     "test:live": "node scripts/verify-live.mjs",
     "test:library": "node scripts/verify-library.mjs",
+    "test:home": "node scripts/verify-home.mjs",
     "start": "node scripts/serve.mjs"
   },
   "devDependencies": {

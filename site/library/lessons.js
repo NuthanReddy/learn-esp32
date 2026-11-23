@@ -319,4 +319,218 @@ void loop() {
   Serial.println(written ? "Record appended" : "Record write failed");
 }`,
   },
+  {
+    id: "hallway", library: true, category: "Home automation",
+    title: "Home: hallway light", cardTitle: "25. Home: hallway light",
+    cardW: 310, thumb: "tablelamp", heading: "Home automation: hallway light",
+    lede: "Turn on a tabletop LED only when the hallway is dark and motion is detected. More motion restarts the off-delay. Make it bright to switch the light off immediately. This is a browser model, not a mains lighting controller.",
+    features: [
+      ["sensor", "Darkness AND motion: two conditions before switching on"],
+      ["clock", "Retriggerable off-delay; no blocking delay()"],
+      ["bolt", "One small, current-limited LED, never a mains lamp"],
+    ],
+    pinout: [
+      ["GPIO 27", "PIR digital output", "Use a 3.3 V-compatible PIR breakout with HIGH = motion; common ground.", "#3d6fc4"],
+      ["GPIO 34", "LDR divider midpoint", "3V3 -> LDR -> midpoint -> 10k -> GND. Bright light raises the ADC reading; GPIO 34 is input-only.", "#2aa38d"],
+      ["GPIO 25", "330 Ohm -> LED -> GND", "A small indicator LED only. The resistor limits current; never connect a lamp or LED strip directly.", "#f0a53a"],
+      ["3V3 / GND", "Low-voltage reference", "No mains, relay contacts or physical appliance connection in this model.", "#2f3547"],
+    ],
+    example: [
+      "Use <b>Motion pulse</b> or click the PIR to simulate a passing person. <b>Adjust simulation</b> can also hold motion HIGH.",
+      "Motion in daylight does nothing. In darkness it lights the LED and starts a timer; another detection gives a full new off-delay.",
+      "The light turns off when the timer expires or daylight returns. Sustained motion keeps extending the timer.",
+      "Light level is a relative ADC percentage, not calibrated lux. Run starts a fresh simulated controller; Stop switches the demo output off.",
+    ],
+    specs: [
+      ["Category", "Home automation / low-voltage tabletop"],
+      ["Inputs", "3.3 V PIR, LDR + 10k divider on ADC1 GPIO 34"],
+      ["Output", "Small LED through 330 Ohm on GPIO 25"],
+      ["Timing", "2-15 second retriggerable off-delay"],
+      ["Boundary", "Simulated only; no mains lamp, account or device connection"],
+    ],
+    params: [
+      range("lightLevel", "hallway-ldr", "Relative light level", 0, 100, 1, 20, "%"),
+      range("darkThreshold", "hallway-ldr", "Dark below", 10, 80, 1, 35, "%"),
+      range("offDelay", "hallway-light", "Off-delay", 2, 15, 1, 5, "s"),
+      toggle("motion", "hallway-pir", "Hold motion detected", false),
+    ],
+    callouts: [
+      callout("hallway-pir", "sensor", "Motion · GPIO 27", "Click for a passing-person pulse; motion must coincide with darkness.", 280, -240, "bottom"),
+      callout("hallway-ldr", "knob", "Darkness · GPIO 34", "Adjust relative light level and the dark threshold.", 280, 170, "top"),
+      callout("hallway-light", "bolt", "Tabletop LED", "Motion retriggers its off-delay. No mains lamp is connected.", -310, 200, "top"),
+    ],
+    sim: "library:hallway",
+    code: `// Tabletop teaching model: small LED only, no mains appliance.
+const int PIR_PIN = 27, LIGHT_ADC = 34, LED_PIN = 25;
+const int DARK_BELOW = {{darkThreshold}};
+const unsigned long OFF_DELAY = {{offDelay}} * 1000UL;
+unsigned long lastMotion = 0;
+bool lightOn = false;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(PIR_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW); // LED has a 330 Ohm series resistor
+}
+
+void loop() {
+  unsigned long now = millis();
+  int level = analogRead(LIGHT_ADC) * 100L / 4095;
+  bool dark = level < DARK_BELOW;
+  bool motion = digitalRead(PIR_PIN) == HIGH;
+  bool previous = lightOn;
+  if (!dark) lightOn = false;
+  else {
+    if (motion) { lightOn = true; lastMotion = now; }
+    if (lightOn && now - lastMotion >= OFF_DELAY) lightOn = false;
+  }
+  digitalWrite(LED_PIN, lightOn ? HIGH : LOW);
+  if (previous != lightOn)
+    Serial.println(lightOn ? "Hallway LED ON" : "Hallway LED OFF");
+  delay(20); // short input polling, not the off-delay
+}`,
+  },
+  {
+    id: "ventilation", library: true, category: "Home automation",
+    title: "Home: humidity fan", cardTitle: "26. Home: humidity fan",
+    cardW: 306, thumb: "wheel", heading: "Home automation: humidity fan",
+    lede: "Raise the simulated bathroom humidity to start a low-voltage tabletop fan. A lower switch-off threshold keeps it running through the middle band instead of chattering. A driver handles the motor current, not an ESP32 GPIO.",
+    features: [
+      ["sensor", "Humidity from a simulated 3.3 V I2C sensor"],
+      ["knob", "Separate ON and OFF thresholds demonstrate hysteresis"],
+      ["motor", "5 V tabletop motor through a MOSFET and flyback diode"],
+    ],
+    pinout: [
+      ["GPIO 21 / 22", "BME280 SDA / SCL", "Sensor powered at 3.3 V; pull-ups must also be 3.3 V.", "#3d6fc4"],
+      ["GPIO 26", "100 Ohm -> MOSFET gate", "Use a 3.3 V-logic-rated N-MOSFET, 100k gate-source pull-down, source to common ground.", "#f0a53a"],
+      ["External +5V", "Tabletop fan positive", "Regulated low-voltage motor supply, not GPIO or the board's 3V3 regulator. Fan negative goes to MOSFET drain.", "#d64a3a"],
+      ["Flyback / GND", "Diode across DC motor", "Diode cathode stripe to +5V, anode to drain; join supply negative and ESP32 GND. No mains appliance wiring.", "#2f3547"],
+    ],
+    example: [
+      "Start below the OFF threshold, then raise humidity to the ON threshold. Watch the rotor and serial feedback.",
+      "Once ON, values between the thresholds keep the fan ON. Once OFF, the same middle-band values keep it OFF.",
+      "Adjust the two thresholds separately. Their slider ranges keep the OFF threshold below ON.",
+      "The motor/driver is a low-voltage teaching model, not an installation guide for a real bathroom fan. Stop switches the simulated motor off; reduced-motion mode suppresses rotor animation.",
+    ],
+    specs: [
+      ["Category", "Home automation / humidity hysteresis"],
+      ["Sensor", "Simulated BME280, I2C 0x76, 3.3 V logic"],
+      ["Thresholds", "ON 60-90%; OFF 30-59%; default 70 / 50% RH"],
+      ["Load", "Low-current 5 V tabletop DC motor/fan and rated driver"],
+      ["Boundary", "No real appliance, mains, Wi-Fi account or safety guarantee"],
+    ],
+    params: [
+      range("humidity", "vent-sensor", "Relative humidity", 20, 95, 1, 45, "%"),
+      range("onThreshold", "vent-driver", "Fan ON at or above", 60, 90, 1, 70, "%"),
+      range("offThreshold", "vent-driver", "Fan OFF at or below", 30, 59, 1, 50, "%"),
+    ],
+    callouts: [
+      callout("vent-sensor", "sensor", "Humidity · I2C", "Change the simulated humidity and watch both thresholds.", 280, -240, "bottom"),
+      callout("vent-driver", "pins", "MOSFET driver", "GPIO controls a gate, never the motor current.", 280, 180, "top"),
+      callout("vent-fan", "motor", "5 V tabletop fan", "Its previous state is retained inside the humidity band.", -310, 200, "top"),
+    ],
+    sim: "library:ventilation",
+    code: `// Low-voltage tabletop DC motor with MOSFET and flyback diode.
+#include <Wire.h>
+#include <Adafruit_BME280.h>
+Adafruit_BME280 sensor;
+const int GATE_PIN = 26;
+const float ON_RH = {{onThreshold}}, OFF_RH = {{offThreshold}};
+bool fanOn = false;
+unsigned long lastSample = 0;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(GATE_PIN, OUTPUT);
+  digitalWrite(GATE_PIN, LOW);
+  Wire.begin(21, 22);
+  if (!sensor.begin(0x76)) {
+    Serial.println("Humidity sensor missing; fan stays OFF");
+    while (true) delay(1000);
+  }
+}
+
+void loop() {
+  if (millis() - lastSample < 500) return;
+  lastSample = millis();
+  float rh = sensor.readHumidity();
+  if (!isfinite(rh)) {
+    fanOn = false;
+    digitalWrite(GATE_PIN, LOW);
+    Serial.println("Invalid reading; tabletop motor OFF");
+    return;
+  }
+  if (!fanOn && rh >= ON_RH) fanOn = true;
+  else if (fanOn && rh <= OFF_RH) fanOn = false;
+  digitalWrite(GATE_PIN, fanOn ? HIGH : LOW);
+  Serial.printf("Humidity %.0f %% RH; fan %s\\n", rh, fanOn ? "ON" : "OFF");
+}`,
+  },
+  {
+    id: "leak", library: true, category: "Home automation",
+    title: "Home: leak indicator", cardTitle: "27. Home: leak indicator",
+    cardW: 316, thumb: "tank", heading: "Home automation: leak indicator",
+    lede: "Wet the simulated under-sink probe to latch a local red LED alert. Drying the probe does not clear it: a separate reset is required, and reset is refused while wet. This teaching model is not a flood alarm or safety system.",
+    features: [
+      ["sensor", "Wetness latches a local alert, even after the probe dries"],
+      ["button", "Reset is accepted only when the probe is dry"],
+      ["bolt", "Low-voltage indicator only; no valve, mains or cloud service"],
+    ],
+    pinout: [
+      ["GPIO 27", "Conditioned wetness input", "Assumes a 3.3 V-compatible digital interface with HIGH = wet. Check real module voltage and polarity.", "#3d6fc4"],
+      ["GPIO 25", "330 Ohm -> red LED -> GND", "A small current-limited local indicator, not a siren or an actuator.", "#f0a53a"],
+      ["GPIO 33", "Reset button -> GND", "INPUT_PULLUP; a new LOW press requests reset. Wetness takes priority.", "#2aa38d"],
+      ["3V3 / GND", "Probe interface power", "Never expose a GPIO to mains or an unconditioned higher-voltage probe. Resistive probes can corrode under continuous bias.", "#2f3547"],
+    ],
+    example: [
+      "Run, then choose <b>Wet probe</b>. The red LED and serial log show the latched alert.",
+      "<b>Reset alert</b> while wet is rejected. Choose <b>Dry probe</b>: the alert stays latched until you reset.",
+      "Click the probe to inspect its wetness control or the 3D reset button to request a reset.",
+      "Run starts a fresh simulated controller. The alert is not persisted across reloads, and Stop pauses the demo. Do not rely on it to protect people or property.",
+    ],
+    specs: [
+      ["Category", "Home automation / latch and reset priority"],
+      ["Probe", "Simulated 3.3 V conditioned digital wetness input"],
+      ["Alert", "Small red LED via 330 Ohm on GPIO 25"],
+      ["Reset", "GPIO 33 active LOW; accepted only when dry"],
+      ["Boundary", "Educational model only, not a leak-protection or safety system"],
+    ],
+    params: [toggle("wet", "leak-probe", "Probe wet", false)],
+    callouts: [
+      callout("leak-probe", "sensor", "Under-sink probe", "Wet it, then dry it: the alert remains latched.", 280, -240, "bottom"),
+      callout("leak-alert", "bolt", "Local red indicator", "A small LED, not a real flood alarm.", 280, 170, "top"),
+      callout("leak-reset", "button", "Reset · GPIO 33", "A wet probe blocks reset; dry it first.", -310, 200, "top"),
+    ],
+    sim: "library:leak",
+    code: `// Educational low-voltage indicator; not a safety system.
+const int WET_PIN = 27, ALERT_PIN = 25, RESET_PIN = 33;
+bool latched = false, previousReset = false;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(WET_PIN, INPUT_PULLDOWN); // conditioned 3.3 V HIGH = wet
+  pinMode(RESET_PIN, INPUT_PULLUP);
+  pinMode(ALERT_PIN, OUTPUT);
+  digitalWrite(ALERT_PIN, LOW); // red LED through 330 Ohm
+}
+
+void loop() {
+  bool wet = digitalRead(WET_PIN) == HIGH;
+  bool resetPressed = digitalRead(RESET_PIN) == LOW;
+  if (wet && !latched) {
+    latched = true;
+    Serial.println("Wet probe: alert LATCHED");
+  }
+  if (resetPressed && !previousReset) {
+    if (wet) Serial.println("Reset REFUSED: probe is still wet");
+    else { latched = false; Serial.println("Dry reset: alert cleared"); }
+  }
+  previousReset = resetPressed;
+  digitalWrite(ALERT_PIN, latched ? HIGH : LOW);
+  delay(25); // simple press polling; real buttons need suitable debounce
+}`,
+  },
 ];
+
+export const TOTAL_LESSONS = 20 + newLessons.length;

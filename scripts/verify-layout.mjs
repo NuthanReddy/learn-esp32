@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
+import { TOTAL_LESSONS } from "../site/library/lessons.js";
 
 const [url, directory, phase = "after"] = process.argv.slice(2);
 assert(url && directory, "Usage: node scripts/verify-layout.mjs URL ARTIFACT_DIRECTORY [before|after]");
@@ -75,7 +76,7 @@ try {
         Math.abs(window.__app.stage.view.zoom - zoom) < .02, metrics.zoom);
       const lessons = await page.locator("#lesson-list .lesson")
         .evaluateAll(elements => elements.map(element => element.dataset.id));
-      assert.equal(lessons.length, 24);
+      assert.equal(lessons.length, TOTAL_LESSONS);
       for (const id of lessons) {
         await page.locator(`#lesson-list [data-id="${id}"]`).click();
         await page.waitForFunction(expected =>

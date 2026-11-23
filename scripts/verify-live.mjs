@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { chromium } from "playwright";
+import { TOTAL_LESSONS } from "../site/library/lessons.js";
 
 const url = process.argv[2] ?? "https://nuthanreddy.github.io/learn-esp32/";
 const screenshot = process.argv[3];
@@ -23,7 +24,7 @@ try {
   await page.goto(url);
   await page.waitForFunction(() => !document.querySelector("#app").inert,
     { timeout: 120000 });
-  assert.equal(await page.locator("#lesson-list .lesson").count(), 24);
+  assert.equal(await page.locator("#lesson-list .lesson").count(), TOTAL_LESSONS);
   assert.match(await page.locator("#board-canvas").getAttribute("data-engine"),
     /^three\.js/);
   await page.getByRole("button", { name: "Run sketch", exact: true }).click();
@@ -52,28 +53,28 @@ try {
     await page.locator(".btn-run").click();
     await page.waitForFunction(() => !window.__app.stage.sim);
   }
-  assert.equal(await page.locator("#progress-count").innerText(), "24/24");
+  assert.equal(await page.locator("#progress-count").innerText(), `${TOTAL_LESSONS}/${TOTAL_LESSONS}`);
   await page.reload();
   await page.waitForFunction(() => window.__app && !document.querySelector("#app").inert);
-  assert.equal(await page.locator("#progress-count").innerText(), "24/24", "Saved progress lost");
+  assert.equal(await page.locator("#progress-count").innerText(), `${TOTAL_LESSONS}/${TOTAL_LESSONS}`, "Saved progress lost");
   await page.locator(".skip-link").focus();
   await page.keyboard.press("Enter");
   assert.equal(await page.evaluate(() => document.activeElement.id), "lesson-content");
   await page.getByRole("link", { name: "Settings", exact: true }).click();
   page.once("dialog", dialog => dialog.dismiss());
   await page.locator("[data-reset]").click();
-  assert.equal(await page.locator("#progress-count").innerText(), "24/24", "Cancel reset changed progress");
+  assert.equal(await page.locator("#progress-count").innerText(), `${TOTAL_LESSONS}/${TOTAL_LESSONS}`, "Cancel reset changed progress");
   await page.evaluate(() => {
     window.originalRemoveItem = Storage.prototype.removeItem;
     Storage.prototype.removeItem = () => { throw new Error("Simulated storage failure"); };
   });
   page.once("dialog", dialog => dialog.accept());
   await page.locator("[data-reset]").click();
-  assert.equal(await page.locator("#progress-count").innerText(), "24/24", "Failed reset lost progress");
+  assert.equal(await page.locator("#progress-count").innerText(), `${TOTAL_LESSONS}/${TOTAL_LESSONS}`, "Failed reset lost progress");
   await page.evaluate(() => { Storage.prototype.removeItem = window.originalRemoveItem; });
   page.once("dialog", dialog => dialog.accept());
   await page.locator("[data-reset]").click();
-  assert.equal(await page.locator("#progress-count").innerText(), "0/24", "Confirmed reset did not clear progress");
+  assert.equal(await page.locator("#progress-count").innerText(), `0/${TOTAL_LESSONS}`, "Confirmed reset did not clear progress");
   await page.getByRole("link", { name: "Settings", exact: true }).click();
   await page.locator('#lesson-list [data-id="board"]').click();
   await page.getByRole("link", { name: "Language", exact: true }).click();
@@ -83,7 +84,7 @@ try {
     await page.locator(`[data-lang="${language}"]`).click();
     await page.waitForFunction(code => document.querySelector(
       `[data-lang="${code}"]`)?.getAttribute("aria-pressed") === "true", language);
-    assert.equal(await page.locator("#lesson-list .lesson").count(), 24);
+    assert.equal(await page.locator("#lesson-list .lesson").count(), TOTAL_LESSONS);
   }
   await page.locator('[data-lang="en"]').click();
   await page.waitForFunction(() => document.querySelector(

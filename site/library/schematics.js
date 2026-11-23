@@ -10,6 +10,7 @@ export function renderLibrarySchematic(lesson, values, requestedWidth = 420) {
   const rectangle = (x, y, w, h, label, fill = "#fffaf3") =>
     `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${fill}" stroke="#2f3547" stroke-width="1.5"/>${text(x + 8, y + 20, label, 14)}`;
   let content = rectangle(12, 35, 95, 196, "ESP32");
+  let viewHeight = 260;
   let notes;
   if (lesson.id === "climate") {
     content += rectangle(235, 35, 172, 79, `BME280 ${values.address}`) +
@@ -74,9 +75,70 @@ export function renderLibrarySchematic(lesson, values, requestedWidth = 420) {
     });
     notes = ["GPIO 18 SCK / 19 MISO / 23 MOSI / 5 CS. Avoid pulling GPIO 5 LOW during reset.",
       "Use 3.3 V-compatible breakout/logic. Records are in a browser virtual file, not a physical card."];
+  } else if (lesson.id === "hallway") {
+    content += rectangle(235, 35, 172, 65, "3.3 V PIR") +
+      text(241, 73, "HIGH = motion", 11) +
+      rectangle(235, 117, 172, 74, "LDR + 10k") +
+      text(241, 153, "3V3 -> LDR -> ADC", 11) +
+      text(241, 174, "ADC -> 10k -> GND", 11) +
+      text(19, 81, "GPIO 27", 11) + line(107, 81, 235, 81, "#3d6fc4") +
+      text(19, 155, "GPIO 34", 11) + line(107, 155, 235, 155, "#2aa38d") +
+      text(19, 216, "GPIO 25", 11) + line(107, 216, 249, 216, "#f0a53a") +
+      rectangle(249, 201, 42, 29, "330") + line(291, 216, 326, 216, "#f0a53a") +
+      '<circle cx="334" cy="216" r="8" fill="#ffe7b5" stroke="#2f3547"/>' +
+      line(342, 216, 382, 216) + text(367, 236, "GND", 11) +
+      text(143, 246, "Small tabletop LED only", 11);
+    notes = ["Power the PIR and LDR divider at 3.3 V; common GND. Relative ADC light level is not calibrated lux.",
+      "GPIO 25 -> 330 Ohm -> LED -> GND. No mains lamp or strip; motion retriggers the off-delay only in darkness."];
+  } else if (lesson.id === "ventilation") {
+    viewHeight = 280;
+    content = rectangle(12, 35, 95, 230, "ESP32") +
+      rectangle(156, 30, 111, 145, "BME280") +
+      text(164, 66, "0x76 / 3.3 V", 11) +
+      text(19, 78, "GPIO 21 SDA", 10) + line(107, 81, 156, 81, "#3d6fc4") +
+      text(19, 101, "GPIO 22 SCL", 10) + line(107, 104, 156, 104, "#8a63c9") +
+      text(19, 138, "3V3", 11) + line(107, 138, 156, 138, "#d64a3a") + text(164, 138, "VCC", 11) +
+      text(19, 161, "GND", 11) + line(107, 161, 156, 161) + text(164, 161, "GND", 11) +
+      text(305, 20, "Regulated +5V", 12) +
+      line(345, 30, 345, 88, "#d64a3a") +
+      rectangle(322, 88, 81, 49, "5 V DC fan") +
+      line(345, 137, 345, 175) + line(345, 175, 306, 175) +
+      line(306, 175, 306, 210) + line(294, 181, 294, 207) +
+      text(312, 212, "MOSFET", 10) + line(306, 210, 306, 254) +
+      text(19, 195, "GPIO 26", 11) + line(107, 191, 210, 191, "#f0a53a") +
+      rectangle(210, 176, 45, 29, "100R") +
+      line(255, 191, 294, 191, "#f0a53a") +
+      line(277, 191, 277, 216) + rectangle(255, 216, 43, 29, "100k") +
+      line(277, 245, 277, 254) +
+      line(345, 73, 288, 73, "#d64a3a") + line(288, 73, 288, 107, "#d64a3a") +
+      line(280, 107, 296, 107, "#d64a3a") +
+      '<path d="M288 111 L280 127 L296 127 Z" fill="#fffaf3" stroke="#d64a3a" stroke-width="1.5"/>' +
+      line(288, 127, 288, 145) + line(288, 145, 345, 145) +
+      text(273, 161, "diode", 10) +
+      text(19, 238, "GND", 11) + line(107, 240, 130, 240) +
+      line(130, 240, 130, 254) + line(130, 254, 397, 254) +
+      text(333, 272, "Common GND", 11);
+    notes = ["BME280 and its SDA/SCL pull-ups use 3.3 V. GPIO 26 controls a logic-rated gate through 100 Ohm; 100k pulls gate to source/GND.",
+      "External regulated 5 V powers the tabletop motor, not a GPIO. Diode cathode to +5V, anode to drain; common GND. Never mains."];
+  } else if (lesson.id === "leak") {
+    content += rectangle(235, 35, 172, 100, "3.3 V probe interface") +
+      text(243, 76, "Conditioned OUT: HIGH wet", 11) +
+      text(19, 84, "GPIO 27", 11) + line(107, 84, 235, 84, "#3d6fc4") +
+      text(19, 101, "3V3", 11) + line(107, 101, 235, 101, "#d64a3a") + text(243, 102, "VCC", 11) +
+      text(19, 121, "GND", 11) + line(107, 121, 235, 121) + text(243, 122, "GND", 11) +
+      text(19, 150, "GPIO 25", 11) + line(107, 148, 249, 148, "#f0a53a") +
+      rectangle(249, 133, 42, 29, "330") + line(291, 148, 326, 148, "#f0a53a") +
+      '<circle cx="334" cy="148" r="8" fill="#f6c7bd" stroke="#2f3547"/>' +
+      line(342, 148, 387, 148) + text(360, 172, "GND", 11) +
+      text(19, 208, "GPIO 33", 11) + line(107, 205, 266, 205, "#2aa38d") +
+      line(266, 205, 287, 192) + line(291, 205, 387, 205) +
+      text(228, 231, "Reset to GND / internal pull-up", 11) +
+      text(121, 250, "Wetness has priority over reset", 11);
+    notes = ["Use a conditioned 3.3 V digital probe interface and common GND, never a higher-voltage or mains input.",
+      "GPIO 25 -> 330 Ohm -> red LED -> GND; GPIO 33 reset to GND. Reset is refused while wet. Not a safety system."];
   } else throw new Error(`No library schematic for ${lesson.id}`);
   return {
-    svg: `<svg viewBox="0 0 420 260" width="${width}" height="${width * 260 / 420}" role="img" aria-label="${escape(lesson.title)} schematic">${content}</svg>`,
-    notes, w: width, h: width * 260 / 420,
+    svg: `<svg viewBox="0 0 420 ${viewHeight}" width="${width}" height="${width * viewHeight / 420}" role="img" aria-label="${escape(lesson.title)} schematic">${content}</svg>`,
+    notes, w: width, h: width * viewHeight / 420,
   };
 }

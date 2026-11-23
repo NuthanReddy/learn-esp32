@@ -108,7 +108,81 @@ test("200-record limit is bounded and explicit", () => {
   assert.match(model.state.error, /limit 200/);
   assert(!messages.some(message => message.includes("APPEND")));
 });
-test("four supported lesson schematics have safe wiring notes", () => {
+test("hallway requires darkness and motion; pulses retrigger a full off-delay", () => {
+  const { model, params, inputs, messages } = fixture("hallway", { offDelay: 2, lightLevel: 80 });
+  inputs.motion = true; model.update(1);
+  assert.equal(model.state.lightOn, false);
+  params.lightLevel = 20; model.update(1);
+  assert.equal(model.state.lightOn, false, "Darkness alone must not trigger");
+  inputs.motion = true; model.update(1);
+  assert.equal(model.state.lightOn, true);
+  model.update(1500);
+  inputs.motion = true; model.update(1);
+  assert.equal(model.state.remainingSeconds, 2);
+  model.update(1999); assert.equal(model.state.lightOn, true);
+  model.update(1); assert.equal(model.state.lightOn, false);
+  assert(messages.some(message => message.includes("retrigger")));
+  params.motion = true; model.update(1); model.update(4000);
+  assert.equal(model.state.lightOn, true, "Held motion keeps the timer alive");
+  params.motion = false; model.update(1999); assert.equal(model.state.lightOn, true);
+  model.update(1); assert.equal(model.state.lightOn, false);
+  inputs.motion = true; model.update(1);
+  params.lightLevel = params.darkThreshold; model.update(1);
+  assert.equal(model.state.lightOn, false, "Threshold is not darkness; daylight cancels the timer");
+  params.lightLevel = 20; inputs.motion = true; model.update(1);
+  model.stop(); model.update(1);
+  assert.equal(model.state.lightOn, false);
+});
+test("fan uses inclusive hysteresis boundaries and does not chatter inside the band", () => {
+  const { model, params, messages } = fixture("ventilation");
+  for (const humidity of [51, 69, 60, 69]) {
+    params.humidity = humidity; model.update(1);
+    assert.equal(model.state.fanOn, false);
+  }
+  params.humidity = 70; model.update(1);
+  assert.equal(model.state.fanOn, true);
+  for (const humidity of [69, 51, 60, 51]) {
+    params.humidity = humidity; model.update(1);
+    assert.equal(model.state.fanOn, true);
+  }
+  params.humidity = 50; model.update(1);
+  assert.equal(model.state.fanOn, false);
+  assert.equal(model.state.switches, 2);
+  params.humidity = 90; params.onThreshold = 80; params.offThreshold = 40; model.update(1);
+  assert.equal(model.state.fanOn, true);
+  params.offThreshold = 80; model.update(1);
+  assert.equal(model.state.fanOn, false);
+  assert.match(model.state.error, /OFF threshold/);
+  assert(messages.some(message => message.includes("ERROR")));
+  params.offThreshold = 40; model.update(1);
+  assert.equal(model.state.error, null);
+  assert.equal(model.state.fanOn, true);
+  model.stop(); model.update(1);
+  assert.equal(model.state.fanOn, false);
+});
+test("wetness latches; dry alone cannot clear, and active wet resets are refused", () => {
+  const { model, params, inputs, messages } = fixture("leak");
+  params.wet = true; inputs.reset = true; model.update(1);
+  assert.equal(model.state.latched, true);
+  assert.equal(model.state.rejectedResets, 1);
+  assert.match(model.state.error, /still wet/);
+  inputs.reset = true; assert.equal(model.update(1), true, "Rejected reset must refresh visible feedback");
+  assert.equal(model.state.rejectedResets, 2);
+  params.wet = false; model.update(1);
+  assert.equal(model.state.latched, true);
+  assert.equal(model.state.error, null);
+  inputs.reset = true; model.update(1);
+  assert.equal(model.state.latched, false);
+  assert.equal(model.state.resets, 1);
+  params.wet = true; model.update(1);
+  assert.equal(model.state.latched, true);
+  model.stop(); params.wet = false; inputs.reset = true; model.update(1);
+  assert.equal(model.state.latched, true, "Stopped controller freezes the latch");
+  assert.equal(fixture("leak", { wet: true }).model.state.latched, true);
+  assert.equal(fixture("leak", { wet: false }).model.state.latched, false);
+  assert(messages.some(message => message.includes("DRY RESET accepted")));
+});
+test("all supported lesson schematics have safe wiring notes", () => {
   for (const lesson of newLessons) {
     assert(lesson.callouts.every(callout => Number.isFinite(callout.at) &&
       Number.isFinite(callout.leg)), "Native callout routes require explicit attachment and leg");

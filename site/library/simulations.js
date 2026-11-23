@@ -213,9 +213,132 @@ export function createModel(kind, {
       return changed;
     });
   }
+  if (kind === "hallway") {
+    Object.assign(state, { lightOn: false, remainingSeconds: 0, activations: 0 });
+    let deadline = null, lastMotion = false, lastReading = "";
+    const step = () => {
+      const pulse = Boolean(inputs.motion);
+      inputs.motion = false;
+      const motion = Boolean(params.motion) || pulse;
+      const dark = Number(params.lightLevel) < Number(params.darkThreshold);
+      const previous = JSON.stringify([state.lightOn, state.remainingSeconds, state.phase]);
+      if (!dark) {
+        deadline = null;
+        if (state.lightOn) emit("DAYLIGHT: hallway LED OFF; timer cancelled");
+        state.lightOn = false;
+        if (pulse || (motion && !lastMotion)) emit("MOTION ignored: hallway is not dark");
+      } else if (motion) {
+        deadline = elapsed + Number(params.offDelay) * 1000;
+        if (!state.lightOn) {
+          state.lightOn = true;
+          state.activations++;
+          emit(`DARK + MOTION: LED ON; off-delay ${params.offDelay} s`);
+        } else if (pulse || !lastMotion) emit(`MOTION retrigger: full ${params.offDelay} s off-delay`);
+      } else if (state.lightOn && elapsed >= deadline) {
+        state.lightOn = false;
+        deadline = null;
+        emit("OFF-DELAY expired: hallway LED OFF");
+      }
+      lastMotion = Boolean(params.motion);
+      state.dark = dark;
+      state.lightLevel = Number(params.lightLevel);
+      state.motion = motion;
+      state.remainingSeconds = state.lightOn ? Math.max(0, Math.ceil((deadline - elapsed) / 1000)) : 0;
+      state.phase = !dark ? "daylight" : state.lightOn ? "light on" : "waiting for motion";
+      const reading = `${params.lightLevel}/${params.darkThreshold}`;
+      if (reading !== lastReading) {
+        emit(`LIGHT ${params.lightLevel}% / dark below ${params.darkThreshold}%: ${dark ? "dark" : "bright"}`);
+        lastReading = reading;
+      }
+      display(["HALLWAY DEMO", state.lightOn ? "LED ON" : "LED OFF",
+        dark ? "DARK" : "DAYLIGHT", `${state.remainingSeconds} s left`]);
+      return previous !== JSON.stringify([state.lightOn, state.remainingSeconds, state.phase]);
+    };
+    step();
+    return model(step, () => {
+      state.lightOn = false;
+      state.remainingSeconds = 0;
+      display(["HALLWAY DEMO", "STOPPED", "LED OFF"]);
+      emit("STOP: tabletop LED OFF; Run starts a fresh demo timer");
+    });
+  }
+  if (kind === "ventilation") {
+    Object.assign(state, { fanOn: false, switches: 0 });
+    let lastReading = "";
+    const step = () => {
+      const humidity = Number(params.humidity);
+      const on = Number(params.onThreshold), off = Number(params.offThreshold);
+      const previous = state.fanOn;
+      const reading = `${humidity}/${on}/${off}`;
+      state.humidity = humidity;
+      state.onThreshold = on;
+      state.offThreshold = off;
+      if (!Number.isFinite(humidity) || !Number.isFinite(on) || !Number.isFinite(off) || off >= on) {
+        const error = "OFF threshold must be below ON, with finite humidity readings";
+        if (state.error !== error) failure(error);
+        state.fanOn = false;
+        state.phase = "invalid thresholds";
+      } else {
+        state.error = null;
+        if (!state.fanOn && humidity >= on) state.fanOn = true;
+        else if (state.fanOn && humidity <= off) state.fanOn = false;
+        state.phase = state.fanOn ? "fan on" : "fan off";
+      }
+      if (previous !== state.fanOn) {
+        state.switches++;
+        emit(`FAN ${state.fanOn ? "ON" : "OFF"}: ${humidity}% RH; ON >= ${on}%, OFF <= ${off}%`);
+      }
+      if (reading !== lastReading) {
+        emit(`HUMIDITY ${humidity}% RH | hysteresis ${off}-${on}% | fan ${state.fanOn ? "ON" : "OFF"}`);
+        lastReading = reading;
+        display(["VENTILATION DEMO", `${humidity}% RH`, `ON ${on} / OFF ${off}`,
+          state.error ? "INPUT ERROR" : state.fanOn ? "FAN ON" : "FAN OFF"]);
+        return true;
+      }
+      return previous !== state.fanOn;
+    };
+    step();
+    return model(step, () => {
+      state.fanOn = false;
+      display(["VENTILATION DEMO", "STOPPED", "FAN OFF"]);
+      emit("STOP: tabletop motor OFF");
+    });
+  }
+  if (kind === "leak") {
+    Object.assign(state, { latched: false, wet: false, resets: 0, rejectedResets: 0 });
+    const step = () => {
+      const previous = JSON.stringify([state.wet, state.latched, state.phase, state.error, state.rejectedResets]);
+      state.wet = Boolean(params.wet);
+      if (state.wet && !state.latched) {
+        state.latched = true;
+        emit("WET PROBE: local alert LATCHED (educational model, not a safety system)");
+      }
+      if (!state.wet) state.error = null;
+      if (inputs.reset) {
+        inputs.reset = false;
+        if (state.wet) {
+          state.rejectedResets++;
+          failure("Reset refused: probe is still wet; alert remains latched");
+        } else if (state.latched) {
+          state.latched = false;
+          state.resets++;
+          emit("DRY RESET accepted: local alert cleared");
+        } else emit("RESET: already dry and clear");
+      }
+      state.phase = state.latched ? (state.wet ? "wet: alert latched" : "dry: reset required") : "dry: clear";
+      display(["LEAK DEMO", state.wet ? "WET" : "DRY",
+        state.latched ? "ALERT LATCHED" : "CLEAR", "NOT A SAFETY SYSTEM"]);
+      return previous !== JSON.stringify([state.wet, state.latched, state.phase, state.error, state.rejectedResets]);
+    };
+    step();
+    return model(step, () => {
+      display(["LEAK DEMO", "STOPPED", state.latched ? "ALERT LATCHED" : "CLEAR"]);
+      emit("STOP: latch frozen; Run starts a fresh simulated controller");
+    });
+  }
   throw new Error(`Unsupported library simulation: ${kind}`);
 
-  function model(step) {
+  function model(step, onStop) {
     return {
       state,
       update(dt) {
@@ -223,7 +346,7 @@ export function createModel(kind, {
         elapsed += Math.max(0, dt);
         return step(dt);
       },
-      stop() { stopped = true; state.phase = "stopped"; },
+      stop() { stopped = true; state.phase = "stopped"; onStop?.(); },
     };
   }
 }
@@ -237,7 +360,8 @@ export function recordsToCSV(records) {
 export function createLibrarySimulation(mode, context) {
   const kind = mode.slice("library:".length);
   const screens = { climate: "climate-display", mqtt: "mqtt-dashboard",
-    battery: "battery-divider", sdlogger: "sd-display" };
+    battery: "battery-divider", sdlogger: "sd-display", hallway: "hallway-light",
+    ventilation: "vent-fan", leak: "leak-alert" };
   const model = createModel(kind, {
     params: context.params, out: context.out, storage: {
       getItem: key => window.localStorage.getItem(key),
@@ -249,7 +373,13 @@ export function createLibrarySimulation(mode, context) {
   return {
     state: model.state,
     update(now, dt) {
-      const changed = model.update(dt);
+      let changed = model.update(dt);
+      applyOutputs();
+      if (kind === "ventilation" && model.state.fanOn &&
+          !document.documentElement.classList.contains("reduce-motion")) {
+        context.parts.get("vent-fan").group.userData.rotor.rotation.y += dt * .004;
+        changed = true;
+      }
       if (kind === "mqtt" && context.leds.LED) {
         const led = context.leds.LED;
         led.userData.baseEmissive ??= led.emissive.clone();
@@ -259,6 +389,11 @@ export function createLibrarySimulation(mode, context) {
       }
       return changed;
     },
-    stop() { model.stop(); },
+    stop() { model.stop(); applyOutputs(); },
   };
+  function applyOutputs() {
+    if (kind === "hallway") context.parts.get("hallway-light").group.userData.setOn(model.state.lightOn);
+    if (kind === "ventilation") context.parts.get("vent-fan").group.userData.setOn(model.state.fanOn);
+    if (kind === "leak") context.parts.get("leak-alert").group.userData.setOn(model.state.latched);
+  }
 }

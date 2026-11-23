@@ -42,7 +42,7 @@ while (queue.length) {
       text = `# Project-scoped discovery file; only /robots.txt at the host root controls crawling.\nUser-agent: *\nAllow: /learn-esp32/\nSitemap: ${destination}sitemap.xml\n`;
     } else if (name === "sitemap.xml") {
       // The application uses fragment lesson routes: only its canonical page
-      // is a distinct crawlable URL, including the four local additions.
+      // is a distinct crawlable URL, including the local additions.
       text = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${destination}</loc></url>\n</urlset>\n`;
     } else if (name === "index.html") {
       text = text.replaceAll(source, destination)

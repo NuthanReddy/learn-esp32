@@ -35,7 +35,17 @@ export function installLibraryUI({ app, code }) {
     mqtt: '<button data-action="network">Toggle network</button><button data-action="lamp">Toggle lamp command</button>',
     battery: '<button data-action="wake">Wake button</button>',
     sdlogger: '<button data-action="record">Record now</button><button data-action="export">Export CSV</button><button data-action="format">Clear virtual file</button>',
+    hallway: '<button data-action="motion">Motion pulse</button>',
+    ventilation: '<button data-action="humid">Add humidity</button><button data-action="dryAir">Dry air</button>',
+    leak: '<button data-action="wet">Wet probe</button><button data-action="dryProbe">Dry probe</button><button data-action="reset">Reset alert</button>',
   };
+  const homeLessons = newLessons.filter(lesson => lesson.category === "Home automation");
+  const jump = document.createElement("button");
+  jump.className = "home-library-jump";
+  jump.textContent = `Home automation (${homeLessons.length})`;
+  jump.setAttribute("aria-label", "Open home automation lessons");
+  jump.addEventListener("click", () => app.selectLesson(homeLessons[0].id));
+  document.querySelector(".lessons").append(jump);
   const requireRunning = () => {
     if (!app.stage.sim || !app.state.lesson.library) {
       code.log("SIM: Run this lesson before using its demonstration actions.");
@@ -56,6 +66,10 @@ export function installLibraryUI({ app, code }) {
     if (!action) return;
     if (action === "network") app.setParam("online", !app.state.values.online);
     else if (action === "lamp") app.setParam("lamp", !app.state.values.lamp);
+    else if (action === "humid") app.setParam("humidity", app.state.values.onThreshold + 5);
+    else if (action === "dryAir") app.setParam("humidity", app.state.values.offThreshold - 5);
+    else if (action === "wet") app.setParam("wet", true);
+    else if (action === "dryProbe") app.setParam("wet", false);
     else if (action === "export") {
       const state = app.stage.sim?.state ?? latest.get("sdlogger");
       if (!state?.records?.length) {
@@ -94,7 +108,7 @@ export function installLibraryUI({ app, code }) {
       panel.hidden = !lesson.library;
       if (!lesson.library) { delete root.dataset.library; return; }
       root.dataset.library = lesson.id;
-      panel.innerHTML = `<h2>Simulation lab <span>not connected to hardware</span></h2>
+      panel.innerHTML = `<h2>Simulation lab <span>${lesson.category ? "Home automation demo" : "not connected to hardware"}</span></h2>
         <p class="library-status" aria-live="polite">Run the sketch to begin.</p>
         <div class="library-actions">${actions[lesson.id]}</div>
         <details><summary>Adjust simulation</summary>${controls(lesson.params)}</details>
@@ -117,6 +131,12 @@ export function installLibraryUI({ app, code }) {
         `${result.phase}, wake: ${result.wakeCause} | ${result.adcMv} mV ADC -> ${result.voltage.toFixed(2)} V | ideal module avg ${result.averageMa.toFixed(2)} mA; divider ${result.dividerUa.toFixed(1)} uA`;
       if (lesson.id === "sdlogger") status =
         `${result.phase} | ${result.records.length}/200 records | ${result.error ?? "Virtual /readings.csv"}`;
+      if (lesson.id === "hallway") status =
+        `${result.phase} | light ${result.lightLevel}% | LED ${result.lightOn ? "ON" : "OFF"} | ${result.remainingSeconds} s left`;
+      if (lesson.id === "ventilation") status =
+        `${result.phase} | ${result.humidity}% RH | ON >= ${result.onThreshold}%, OFF <= ${result.offThreshold}% | ${result.switches} switches${result.error ? ` | ${result.error}` : ""}`;
+      if (lesson.id === "leak") status =
+        `${result.phase} | ${result.error ?? (result.latched ? "Dry probe, then reset." : "No alert")} | ${result.rejectedResets} rejected resets`;
     }
     if (status !== lastStatus) {
       panel.querySelector(".library-status").textContent = status;
@@ -142,6 +162,7 @@ export function installLibraryUI({ app, code }) {
   for (const lesson of newLessons) {
     const item = document.querySelector(`#lesson-list [data-id="${lesson.id}"]`);
     item?.setAttribute("data-library-lesson", "");
+    if (lesson.category) item?.setAttribute("data-category", lesson.category);
   }
 }
 

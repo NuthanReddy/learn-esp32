@@ -3,6 +3,7 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 import { LOG_KEY } from "../site/library/simulations.js";
+import { TOTAL_LESSONS } from "../site/library/lessons.js";
 
 const url = process.argv[2] ?? "http://127.0.0.1:8080/learn-esp32/";
 const directory = process.argv[3];
@@ -20,8 +21,8 @@ try {
     page.on("response", response => { if (response.status() >= 400) failures.push(`${response.status()} ${response.url()}`); });
     await page.goto(url);
     await page.waitForFunction(() => window.__app && !document.querySelector("#app").inert);
-    assert.equal(await page.locator("#lesson-list .lesson").count(), 24);
-    assert.equal(await page.locator(".progress-track").getAttribute("aria-valuemax"), "24");
+    assert.equal(await page.locator("#lesson-list .lesson").count(), TOTAL_LESSONS);
+    assert.equal(await page.locator(".progress-track").getAttribute("aria-valuemax"), String(TOTAL_LESSONS));
     async function select(id) {
       await page.locator(`#lesson-list [data-id="${id}"]`).click();
       await page.waitForFunction(id => document.querySelector("#app").dataset.library === id &&
@@ -135,10 +136,10 @@ try {
     await capture("sdlogger");
     await page.locator(".btn-run").click();
     const stored = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).length, LOG_KEY);
-    assert.equal(await page.locator("#progress-count").innerText(), "4/24");
+    assert.equal(await page.locator("#progress-count").innerText(), `4/${TOTAL_LESSONS}`);
     await page.reload();
     await page.waitForFunction(() => window.__app && !document.querySelector("#app").inert);
-    assert.equal(await page.locator("#progress-count").innerText(), "4/24");
+    assert.equal(await page.locator("#progress-count").innerText(), `4/${TOTAL_LESSONS}`);
     await select("climate");
     assert.equal(await page.evaluate(() => window.__app.state.values.temperature), 30);
     assert.equal(await page.evaluate(() => window.__app.state.values.address), "0x77");
