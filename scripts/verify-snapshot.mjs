@@ -13,11 +13,17 @@ const html = await readFile("site/index.html", "utf8");
 assert(!/(?:src|href)=["']\/(?!\/)/.test(html), "Host-root HTML asset");
 assert(!html.includes(snapshot.source), "Original deployment metadata remains");
 assert(html.includes("https://x.com/DilumSanjaya"), "Original author credit missing");
+assert(html.includes('href="./customizations.css"'), "Layout stylesheet missing");
+assert((await readFile("site/customizations.css", "utf8")).length > 100);
 const entry = snapshot.files.find(file => /^assets\/index-.*\.js$/.test(file.path));
 const js = await readFile(path.join("site", ...entry.path.split("/")), "utf8");
 assert.equal([...js.matchAll(/cardTitle:`/g)].length, 20, "Expected 20 lessons");
 assert(js.includes("document.baseURI).href"),
   "Vite preloads must resolve against the document, not the module directory");
+const stage = snapshot.files.find(file => /^assets\/stage-.*\.js$/.test(file.path));
+const stageJS = await readFile(path.join("site", ...stage.path.split("/")), "utf8");
+assert(stageJS.includes("zoom:Math.max(3.2,t.zoom*.9)") &&
+  stageJS.includes("zoom:Math.max(3.2,c*.9)"), "Reduced home camera framing missing");
 const css = snapshot.files.find(file => /^assets\/index-.*\.css$/.test(file.path));
 assert(!(await readFile(path.join("site", ...css.path.split("/")), "utf8"))
   .includes("/assets/"), "Host-root font URL");

@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import { customize } from "./apply-customizations.mjs";
 
 const source = "https://learn-esp32.vercel.app/";
 const destination = "https://nuthanreddy.github.io/learn-esp32/";
@@ -56,7 +57,7 @@ while (queue.length) {
       manifest.scope = "./";
       text = JSON.stringify(manifest, null, 2) + "\n";
     }
-    output = Buffer.from(text);
+    output = Buffer.from(customize(name, text));
   }
   const target = path.join("site", ...name.split("/"));
   await mkdir(path.dirname(target), { recursive: true });
