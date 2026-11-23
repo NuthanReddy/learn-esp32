@@ -23,7 +23,7 @@ try {
   await page.goto(url);
   await page.waitForFunction(() => !document.querySelector("#app").inert,
     { timeout: 120000 });
-  assert.equal(await page.locator("#lesson-list .lesson").count(), 20);
+  assert.equal(await page.locator("#lesson-list .lesson").count(), 24);
   assert.match(await page.locator("#board-canvas").getAttribute("data-engine"),
     /^three\.js/);
   await page.getByRole("button", { name: "Run sketch", exact: true }).click();
@@ -46,7 +46,35 @@ try {
       .getAttribute("data-id"), lesson.id);
     assert((await page.locator(".info-card").innerText()).length > 80);
     assert((await page.locator(".code-card code").innerText()).length > 80);
+    await page.locator(".btn-run").click();
+    await page.waitForFunction(() => window.__app.stage.sim);
+    await page.waitForTimeout(120);
+    await page.locator(".btn-run").click();
+    await page.waitForFunction(() => !window.__app.stage.sim);
   }
+  assert.equal(await page.locator("#progress-count").innerText(), "24/24");
+  await page.reload();
+  await page.waitForFunction(() => window.__app && !document.querySelector("#app").inert);
+  assert.equal(await page.locator("#progress-count").innerText(), "24/24", "Saved progress lost");
+  await page.locator(".skip-link").focus();
+  await page.keyboard.press("Enter");
+  assert.equal(await page.evaluate(() => document.activeElement.id), "lesson-content");
+  await page.getByRole("link", { name: "Settings", exact: true }).click();
+  page.once("dialog", dialog => dialog.dismiss());
+  await page.locator("[data-reset]").click();
+  assert.equal(await page.locator("#progress-count").innerText(), "24/24", "Cancel reset changed progress");
+  await page.evaluate(() => {
+    window.originalRemoveItem = Storage.prototype.removeItem;
+    Storage.prototype.removeItem = () => { throw new Error("Simulated storage failure"); };
+  });
+  page.once("dialog", dialog => dialog.accept());
+  await page.locator("[data-reset]").click();
+  assert.equal(await page.locator("#progress-count").innerText(), "24/24", "Failed reset lost progress");
+  await page.evaluate(() => { Storage.prototype.removeItem = window.originalRemoveItem; });
+  page.once("dialog", dialog => dialog.accept());
+  await page.locator("[data-reset]").click();
+  assert.equal(await page.locator("#progress-count").innerText(), "0/24", "Confirmed reset did not clear progress");
+  await page.getByRole("link", { name: "Settings", exact: true }).click();
   await page.locator('#lesson-list [data-id="board"]').click();
   await page.getByRole("link", { name: "Language", exact: true }).click();
   const languages = await page.locator("[data-lang]")
@@ -55,7 +83,7 @@ try {
     await page.locator(`[data-lang="${language}"]`).click();
     await page.waitForFunction(code => document.querySelector(
       `[data-lang="${code}"]`)?.getAttribute("aria-pressed") === "true", language);
-    assert.equal(await page.locator("#lesson-list .lesson").count(), 20);
+    assert.equal(await page.locator("#lesson-list .lesson").count(), 24);
   }
   await page.locator('[data-lang="en"]').click();
   await page.waitForFunction(() => document.querySelector(
@@ -67,6 +95,16 @@ try {
   for (const file of snapshot.files) {
     const response = await page.request.get(new URL(file.path, url).href);
     assert.equal(response.status(), 200, file.path);
+  }
+  for (const file of ["robots.txt", "sitemap.xml", "accessibility.js", "library/index.js",
+    "library/lessons.js", "library/simulations.js", "library/scenes.js", "library/schematics.js",
+    "library/styles.css"]) {
+    const response = await page.request.get(new URL(file, url).href);
+    assert.equal(response.status(), 200, file);
+    if (file === "robots.txt") assert((await response.text()).includes(
+      "https://nuthanreddy.github.io/learn-esp32/sitemap.xml"));
+    if (file === "sitemap.xml") assert((await response.text()).includes(
+      "<loc>https://nuthanreddy.github.io/learn-esp32/</loc>"));
   }
   assert(![...requests].some(request => request.startsWith(snapshot.source)),
     "Original deployment asset hotlink");

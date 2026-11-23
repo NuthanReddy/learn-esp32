@@ -1,8 +1,11 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
-    "test": "node scripts/verify-snapshot.mjs",
-    "test:live": "node scripts/verify-live.mjs"
+    "test": "node --test scripts/library.test.mjs && node scripts/verify-snapshot.mjs",
+    "test:live": "node scripts/verify-live.mjs",
+    "test:library": "node scripts/verify-library.mjs",
+    "start": "node scripts/serve.mjs"
   },
   "devDependencies": {
     "playwright": "^1.65.1"

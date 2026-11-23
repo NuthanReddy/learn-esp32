@@ -1,8 +1,9 @@
 # Learn ESP32
 
 An authorized static snapshot of [Learn ESP32](https://learn-esp32.vercel.app/),
-with all 20 interactive lessons, the 3D board and circuit simulations, lesson
-navigation, schematics, settings and language resources preserved.
+with the original 20 interactive lessons, 3D board, circuit simulations,
+navigation, schematics, settings and languages preserved, plus four new lessons
+in the same visual style (24 lessons total).
 
 **Live site:** https://nuthanreddy.github.io/learn-esp32/  
 **Repository:** https://github.com/NuthanReddy/learn-esp32
@@ -37,6 +38,49 @@ script reuses these transformations rather than discarding local polish.
 The portrait navigation adapts to narrow screens so all six actions remain
 visible, including at 320px.
 
+The clone audit also restores project-scoped `robots.txt` and `sitemap.xml`,
+updates canonical/sharing/structured metadata and the non-JavaScript lesson
+list to 24, adds a keyboard skip link in all 21 existing languages, and asks for
+localized confirmation before resetting progress. A storage failure refuses
+the reset rather than losing in-memory progress. The project-level robots file
+is a discovery resource; only `/robots.txt` at the origin root controls crawling.
+No account-root repository is modified.
+
+## Extended lesson library
+
+Maintained ES modules in `site/library/` add:
+
+| Lesson | Interactive demonstration |
+|---|---|
+| BME280 climate station | Shared I2C sensor/OLED addresses, readings and temperature offset |
+| MQTT / Home Assistant telemetry | Simulated broker/dashboard, retained lamp commands and reconnect |
+| Battery / deep sleep | 47k/47k ADC divider, ideal power budget, timer and GPIO wake |
+| microSD logger | SPI circuit, timestamped virtual CSV, card errors, download and persistence |
+
+Each includes native lesson navigation, progress, component selection, 3D
+parts, schematics and overview/pinout/example/specification tabs. Dedicated
+thumbnails are rendered from the new 3D scenes. Source data, scene builders,
+simulation models and scoped controls/styles are separate from the snapshot.
+`scripts/apply-customizations.mjs` applies small, asserted, idempotent adapters
+to the native registries; it fails if incompatible upstream code changes.
+
+All demonstrations are **simulations**, not actual firmware, sensor calibration,
+MQTT/Home Assistant connections or physical SD access. Instructional Arduino
+examples need the named libraries and suitable classic ESP32 hardware; they
+are not compiled or uploaded by this website. Battery voltage is monitored
+through a divider while USB powers the DevKit; a real battery supply requires
+appropriate regulation and cell protection. The power estimate is an ideal
+module model, not measured DevKit consumption.
+
+The virtual logger uses browser UTC and local storage
+(`learn-esp32:library:sd-records`), limited to 200 records. Export before clearing
+browser data. Clearing requires confirmation and a mounted virtual card; a
+successful clear waits a full sampling interval before appending. Storage
+errors and missing cards are explicit, with no successful-write fallback.
+Existing progress/settings remain under their original storage keys. The
+original UI and 20 lessons retain all 21 languages; **new lesson narratives and
+simulation controls currently use English fallback**.
+
 `snapshot.json` records capture time, source URLs and SHA-256 hashes of both
 downloaded and published assets. The snapshot is frozen, not automatically
 synced with future upstream changes.
@@ -46,11 +90,11 @@ synced with future upstream changes.
 Use Node.js 24 or newer. No package installation or build is needed:
 
 ```sh
-node scripts/verify-snapshot.mjs
-npx --yes http-server site -p 8080
+npm test
+node scripts/serve.mjs
 ```
 
-Open http://localhost:8080/. Serve over HTTP rather than opening the HTML as a
+Open http://127.0.0.1:8080/learn-esp32/. Serve over HTTP rather than opening the HTML as a
 file, because browser modules require a web origin. A current browser with
 WebGL 2 and hardware acceleration is required for the 3D view. Settings and
 progress are saved locally per browser/origin; they do not transfer from the
@@ -64,7 +108,8 @@ npm run test:live
 ```
 
 It checks WebGL startup, sketch execution, 3D controls, navigation and code for
-all 20 lessons, and asset responses and browser errors. Pass a URL and screenshot
+all 24 lessons, progress persistence/reset, all languages, asset responses and
+browser errors. Pass a URL and screenshot
 output path to `node scripts/verify-live.mjs` to check another deployment or save
 a full-page capture. Playwright is a development-only dependency; it is never
 shipped to Pages.
@@ -73,8 +118,15 @@ For a layout revision, `node scripts/verify-layout.mjs URL ARTIFACT_DIRECTORY
 before` captures baseline screenshots and measurements at five desktop, mobile,
 tablet and landscape sizes. Run it with `after` against the revised URL to check
 the actual camera change, icon sizes, unchanged text sizing, 44px compact hit
-targets, page overflow and all 20 lesson selections. Keep comparison artifacts
+targets, page overflow and all 24 lesson selections. Keep comparison artifacts
 outside the repository.
+
+`node scripts/verify-library.mjs URL ARTIFACT_DIRECTORY` exercises the new
+simulations, controls, CSV export, card failures and persistence at five screen
+sizes, with desktop/mobile captures. `node scripts/audit-source.mjs URL`
+compares the original 20 lesson titles, selection, run/stop and language flows
+against the reference. Run `node scripts/render-library-thumbnails.mjs URL`
+against the local server to regenerate the maintained 3D preview images.
 
 ## Refresh and deployment
 
@@ -89,8 +141,8 @@ The mirror discovers assets recursively from fresh HTML, scripts, CSS and the
 manifest, and fails on missing or external application assets. Review the diff
 and remove obsolete hashed assets when refreshing; recheck third-party notices
 if dependencies change. The deployed bundle has no source maps or original
-build configuration, so substantial feature changes should use authorized
-original source rather than editing minified bundles.
+build configuration; local extensions use maintained modules and guarded
+integration points rather than scattered hand edits to minified bundles.
 
 Pushing to `main` runs `.github/workflows/pages.yml`, verifies the snapshot,
 uploads only `site/`, and deploys through GitHub Pages Actions. No server or API

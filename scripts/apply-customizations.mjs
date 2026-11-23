@@ -3,14 +3,64 @@ import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { newLessons } from "../site/library/lessons.js";
 
 export function customize(name, text) {
-  if (name === "index.html" && !text.includes('href="./customizations.css"')) {
+  const replaceOnce = (before, after) => {
+    if (text.includes(after)) return;
+    assert.equal(text.split(before).length - 1, 1,
+      `Upstream ${name} adapter changed: ${before.slice(0, 60)}`);
+    text = text.replace(before, after);
+  };
+  if (name === "index.html") {
     assert(text.includes("</head>"), "Snapshot HTML has no head");
-    return text.replace("</head>",
+    text = text.replaceAll("20 free beginner lessons.", "24 free beginner lessons.");
+    text = text.replace(/(<script type="application\/ld\+json">)(.*?)(<\/script>)/,
+      (_, open, json, close) => {
+        const metadata = JSON.parse(json);
+        for (const lesson of newLessons) {
+          if (!metadata.teaches.includes(lesson.heading)) metadata.teaches.push(lesson.heading);
+        }
+        return open + JSON.stringify(metadata) + close;
+      });
+    if (!text.includes("21. Climate station</b>")) {
+      text = text.replace("</ol>", newLessons.map(lesson =>
+        `<li><b>${lesson.cardTitle}</b> — ${lesson.lede}</li>`).join("") + "</ol>");
+    }
+    if (!text.includes('href="./customizations.css"')) text = text.replace("</head>",
       '    <link rel="stylesheet" href="./customizations.css" />\n  </head>');
+    if (!text.includes('href="./library/styles.css"')) text = text.replace("</head>",
+      '    <link rel="stylesheet" href="./library/styles.css" />\n  </head>');
+    return text;
+  }
+  if (/^assets\/index-.*\.js$/.test(name)) {
+    if (!text.includes('from"../library/index.js"')) text =
+      'import{newLessons,renderLibrarySchematic,installLibraryUI,installLibraryThumbnails}from"../library/index.js";' +
+      'import{installAccessibility}from"../accessibility.js";\n' + text;
+    // Upgrade the already-applied adapter without changing the snapshot body.
+    replaceOnce('installLibraryUI}from"../library/index.js"',
+      'installLibraryUI,installLibraryThumbnails}from"../library/index.js"');
+    replaceOnce('sim:`stepper`}];function d(e)',
+      'sim:`stepper`}];u.push(...newLessons);function d(e)');
+    replaceOnce('function ht(e,t,n=420){',
+      'function ht(e,t,n=420){if(e.library)return renderLibrarySchematic(e,t,n);');
+    replaceOnce('mt=e=>typeof $e[e.id]==`function`',
+      'mt=e=>e.library||typeof $e[e.id]==`function`');
+    replaceOnce('state:U,setParam:On,inspector:J};let n=()=>',
+      'state:U,setParam:On,inspector:J};installLibraryUI({app:window.__app,code:K});installAccessibility();let n=()=>');
+    replaceOnce('.6+.38*e/t)})}catch(e)',
+      '.6+.38*e/t)});installLibraryThumbnails()}catch(e)');
+    replaceOnce('resetProgress:()=>{G.done.clear();try{localStorage.removeItem(`learn-esp32:done`)}catch{}G.paintDone(),Cn()}',
+      'resetProgress:()=>{if(!window.confirm(x(`Reset progress`)+`?`))return;try{localStorage.removeItem(`learn-esp32:done`)}catch(e){K.log(x(`Error`)+`: `+e.message);return}G.done.clear();G.paintDone(),Cn()}');
+    return text;
   }
   if (!/^assets\/stage-.*\.js$/.test(name)) return text;
+  if (!text.includes('from"../library/scenes.js"')) text =
+    'import{registerLibraryScenes,createLibrarySimulation}from"../library/scenes.js";\n' + text;
+  replaceOnce(',au=e=>ru[e]?.boardButtons??null;',
+    ';registerLibraryScenes(ru,iu,{Object3D:pt,Vector3:G,Mesh:Dn,BoxGeometry:_t,PlaneGeometry:R,Material:he,CanvasTexture:ye,sRGB:le,wire:Q});var au=e=>ru[e]?.boardButtons??null;');
+  replaceOnce('function xu(l,u){',
+    'function xu(l,u){if(l.startsWith(`library:`))return createLibrarySimulation(l,u);');
   const methods = [...text.matchAll(/lessonView\(e\)\{[\s\S]*?\}isHome\(\)/g)];
   assert.equal(methods.length, 1, "Upstream camera method changed; review required");
   const method = methods[0][0];

@@ -75,7 +75,7 @@ try {
         Math.abs(window.__app.stage.view.zoom - zoom) < .02, metrics.zoom);
       const lessons = await page.locator("#lesson-list .lesson")
         .evaluateAll(elements => elements.map(element => element.dataset.id));
-      assert.equal(lessons.length, 20);
+      assert.equal(lessons.length, 24);
       for (const id of lessons) {
         await page.locator(`#lesson-list [data-id="${id}"]`).click();
         await page.waitForFunction(expected =>

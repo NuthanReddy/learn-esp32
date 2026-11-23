@@ -5,7 +5,7 @@ import { customize } from "./apply-customizations.mjs";
 
 const source = "https://learn-esp32.vercel.app/";
 const destination = "https://nuthanreddy.github.io/learn-esp32/";
-const queue = [new URL(source)];
+const queue = [new URL(source), new URL("robots.txt", source), new URL("sitemap.xml", source)];
 const seen = new Set();
 const files = [];
 const resource = /\.(?:js|css|json|webmanifest|woff2?|ttf|ico|svg|png|jpe?g|webp|gif|glb|gltf|bin|hdr|exr|mp3|wav)(?:[?#].*)?$/i;
@@ -23,7 +23,7 @@ while (queue.length) {
   const name = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
   if (name.includes("..")) throw new Error(`Invalid resource path: ${name}`);
   let output = bytes;
-  if (/\.(html|js|css|json|webmanifest)$/.test(name)) {
+  if (/\.(html|js|css|json|webmanifest|xml|txt)$/.test(name)) {
     let text = bytes.toString("utf8");
     const references = [
       ...text.matchAll(/(?:src|href)=["']([^"']+)["']/g),
@@ -38,7 +38,13 @@ while (queue.length) {
       const base = value.startsWith("assets/") ? source : url;
       queue.push(new URL(value, base));
     }
-    if (name === "index.html") {
+    if (name === "robots.txt") {
+      text = `# Project-scoped discovery file; only /robots.txt at the host root controls crawling.\nUser-agent: *\nAllow: /learn-esp32/\nSitemap: ${destination}sitemap.xml\n`;
+    } else if (name === "sitemap.xml") {
+      // The application uses fragment lesson routes: only its canonical page
+      // is a distinct crawlable URL, including the four local additions.
+      text = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${destination}</loc></url>\n</urlset>\n`;
+    } else if (name === "index.html") {
       text = text.replaceAll(source, destination)
         .replaceAll('href="/', 'href="./').replaceAll('src="/', 'src="./');
     } else if (name.endsWith(".css")) {

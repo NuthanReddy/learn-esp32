@@ -1,0 +1,4 @@
+# Project-scoped discovery file; only /robots.txt at the host root controls crawling.
+User-agent: *
+Allow: /learn-esp32/
+Sitemap: https://nuthanreddy.github.io/learn-esp32/sitemap.xml

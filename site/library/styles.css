@@ -1,0 +1,100 @@
+.library-panel {
+  position: absolute;
+  top: 708px;
+  right: 18px;
+  bottom: 142px;
+  width: 486px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  overflow: auto;
+  overscroll-behavior: contain;
+  z-index: 2;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.library-panel[hidden] { display: none; }
+[data-library-lesson] .lesson-thumb { width: 74px; max-height: 62px; }
+html.compact [data-library-lesson] .lesson-thumb { width: 64px; height: 54px; }
+#app[data-library] .info-card:not(.is-expanded) { height: 320px; }
+#app[data-library] .code-card:not(.is-expanded) { top: 442px; }
+.library-panel h2 {
+  font: 700 18px var(--cond);
+  text-transform: uppercase;
+  color: var(--navy);
+}
+.library-panel h2 span {
+  font: 500 12px var(--sans);
+  text-transform: none;
+  color: #6b7279;
+}
+.library-status { margin: 8px 0; color: var(--navy-2); }
+.library-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.library-actions button, .library-panel summary {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--navy);
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.library-actions button:hover, .library-panel summary:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.library-panel :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.library-panel details { margin-top: 10px; }
+.library-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(100px, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 8px;
+}
+.library-control input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 44px; }
+.library-control input[type="checkbox"] { width: 24px; height: 24px; accent-color: var(--accent); }
+.library-control select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--navy);
+}
+.library-control output { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.library-records { margin-top: 10px; overflow-x: auto; }
+.library-records table { width: 100%; border-collapse: collapse; font: 12px var(--mono); }
+.library-records caption { text-align: left; padding-bottom: 5px; font: 500 13px var(--sans); }
+.library-records th, .library-records td { padding: 4px; text-align: left; border-bottom: 1px solid var(--line); }
+
+html.compact #app[data-library] {
+  grid-template-areas: "brand status" "stage stage" "lessons lessons" "info info"
+    "library library" "code code" "schematic schematic" "foot foot";
+}
+html.compact #app[data-library] .info-card:not(.is-expanded) { height: auto; }
+html.compact #app[data-library] .code-card:not(.is-expanded) { top: auto; }
+html.compact .library-panel {
+  position: static;
+  grid-area: library;
+  width: auto;
+  max-height: 460px;
+  min-width: 0;
+}
+html.compact .library-control { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+html.compact .library-control output { grid-column: 2; text-align: right; }
+@media (width <= 600px) {
+  html.compact #app[data-library] {
+    grid-template-areas: "brand" "status" "stage" "lessons" "info" "library" "code" "schematic" "foot";
+  }
+}
+@media (orientation: landscape) and (height <= 600px) {
+  html.compact #app[data-library] {
+    grid-template-areas: "stage brand" "stage status" "stage lessons"
+      "stage info" "stage library" "stage code" "stage schematic" "stage foot";
+  }
+}
