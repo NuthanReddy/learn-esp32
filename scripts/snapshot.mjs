@@ -45,8 +45,8 @@ while (queue.length) {
     } else if (name.endsWith(".js")) {
       // Vite preloads must resolve under the project Pages path, not the host root.
       text = text.replace(/([`"'])\/assets\//g, "$1./assets/");
-      text = text.replace(/([`"'])\/\1\s*\+\s*([a-zA-Z_$][\w$]*)/g,
-        "$1./$1+$2");
+      text = text.replace(/return([`"'])\/\1\s*\+\s*([a-zA-Z_$][\w$]*)/g,
+        "return new URL($2,document.baseURI).href");
     } else if (name.endsWith(".webmanifest")) {
       const manifest = JSON.parse(text);
       for (const icon of manifest.icons ?? []) {

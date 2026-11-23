@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "node scripts/verify-snapshot.mjs",
+    "test:live": "node scripts/verify-live.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1"
+  }
+}

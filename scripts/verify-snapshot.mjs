@@ -16,7 +16,8 @@ assert(html.includes("https://x.com/DilumSanjaya"), "Original author credit miss
 const entry = snapshot.files.find(file => /^assets\/index-.*\.js$/.test(file.path));
 const js = await readFile(path.join("site", ...entry.path.split("/")), "utf8");
 assert.equal([...js.matchAll(/cardTitle:`/g)].length, 20, "Expected 20 lessons");
-assert(js.includes("return`./`+"), "Vite preload base must be project-relative");
+assert(js.includes("document.baseURI).href"),
+  "Vite preloads must resolve against the document, not the module directory");
 const css = snapshot.files.find(file => /^assets\/index-.*\.css$/.test(file.path));
 assert(!(await readFile(path.join("site", ...css.path.split("/")), "utf8"))
   .includes("/assets/"), "Host-root font URL");

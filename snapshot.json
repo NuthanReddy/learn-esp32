@@ -1,7 +1,7 @@
 {
   "source": "https://learn-esp32.vercel.app/",
   "destination": "https://nuthanreddy.github.io/learn-esp32/",
-  "capturedAt": "2026-11-23T04:43:51.258Z",
+  "capturedAt": "2026-11-23T04:48:04.141Z",
   "files": [
     {
       "path": "index.html",
@@ -55,7 +55,7 @@
       "path": "assets/index-DkuYVBNg.js",
       "source": "https://learn-esp32.vercel.app/assets/index-DkuYVBNg.js",
       "originalSha256": "f2902a4e5799a4cc2370b824690fd1178c0efb6e2e6ec4de0ee43f17ec3e3e57",
-      "publishedSha256": "70625360c49862f010ce9d1545b92090a7061b7046e72601faca6ecc92e3ffaf"
+      "publishedSha256": "10a52a1de35d3d0d91c914e734838243e8a2edc7abd5aef758d09aa72d779797"
     },
     {
       "path": "assets/index-D92WvK9w.css",
